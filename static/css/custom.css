@@ -1,0 +1,43 @@
+.iran-font {
+    font-family: IRANSansWeb, sans-serif;
+}
+
+.circle-image {
+    border-radius: 50%;
+}
+
+.article-box_body-font-size {
+    font-size: .8em !important;
+}
+
+.active-pagination-btn {
+    border-bottom: 2px solid #9900ff;
+}
+
+.comment-box {
+    /*background-color: green;*/
+}
+
+.comment-box img {
+    border-radius: 5px;
+    user-select: none;
+}
+
+.comment-box ul li{
+    float: right;
+    margin-right: 10px;
+    user-select: none;
+}
+
+.comment-box ul li i {
+    margin-left: 5px;
+}
+
+.comment-box p {
+    font-size: 0.9em;
+    text-align: justify;
+}
+
+.comment-replay {
+    padding-right: 30px;
+}

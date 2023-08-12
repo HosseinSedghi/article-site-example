@@ -1,0 +1,83 @@
+{% load static %}
+
+<div class="top-bar">
+    <div class="container-fluid">
+        <div class="col-md-6">
+            <div class="row">
+                {% if request.resolver_match.url_name == 'article-list-page' %}
+                    <form action="{% url 'article-list-page' %}" method="get">
+                        <div class="col-md-7">
+                            <input type="text" class="form-control" name="search" placeholder="جستوجو">
+                        </div>
+                        <div class="col-md-5">
+                            <input type="submit" class="btn" value="جستوجو">
+                        </div>
+                    </form>
+                {% elif request.resolver_match.url_name == 'special-article-list-page' %}
+                    <form action="{% url 'special-article-list-page' %}" method="get">
+                        <div class="col-md-7">
+                            <input type="text" class="form-control" name="search" placeholder="جستوجو">
+                        </div>
+                        <div class="col-md-5">
+                            <input type="submit" class="btn" value="جستوجو">
+                        </div>
+                    </form>
+                {% endif %}
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="top-cat-box">
+                <div class="col-md-12">
+                    <div class="menu">
+                        <ul>
+                            {% if request.user.is_authenticated %}
+                                <li><a href="#">پنل کاربری</a></li>
+                                <li><a href="{% url 'logout-page' %}">خروج</a></li>
+                            {% else %}
+                                <li><a href="{% url 'login-page' %}">ورود</a></li>
+                                <li><a href="{% url 'register-page' %}">ثبت نام</a></li>
+                            {% endif %}
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="main-header">
+    <div class="container-fluid">
+        <div class="col-md-6">
+            <div class="main-menu">
+                <ul>
+                    <li><a href="{% url 'home-page' %}">خانه</a></li>
+                    <li><a href="{% url 'article-list-page' %}">مقالات</a></li>
+                    <li><a href="{% url 'special-article-list-page' %}">مقالات ویژه</a></li>
+                    <li><a href="#">درباره ما</a></li>
+                    <li><a href="{% url 'ticket-page' %}">تماس با ما</a></li>
+                    {% if request.user.is_superuser %}
+                        <li><a href="http://127.0.0.1:8000/admin">پنل ادمین</a></li>
+                    {% endif %}
+                </ul>
+            </div>
+        </div>
+        <div class="col-md-6 text-left">
+            {% if request.user.is_authenticated %}
+                <div class="menu">
+                    {% if request.user.profile_image %}
+                        <img src="{{ request.user.profile_image.url }}" alt="" class="circle-image" width="40"
+                             height="40">
+                    {% else %}
+                        <img src="{% static 'img/profile-empty-image.png' %}" alt="" class="circle-image"
+                             width="40"
+                             height="40">
+                    {% endif %}
+                    {% if request.user.get_full_name %}
+                        {{ request.user.get_full_name }}
+                    {% else %}
+                        {{ request.user.username }}
+                    {% endif %}
+                </div>
+            {% endif %}
+        </div>
+    </div>
+</div>

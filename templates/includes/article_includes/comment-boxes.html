@@ -1,0 +1,80 @@
+{% load poll_extras %}
+
+<div class="comments_form">
+
+    {#comment-replay#}
+    {% if comments %}
+        <h5>نظرات </h5>
+        {% for comment in comments %}
+            <div class="row comment-box">
+                <div class="col-md-3">
+                    <img src="{{ comment.author.profile_image.url }}" alt="">
+                </div>
+                <div class="col-md-9">
+                    <div class="row">
+                        <div class="col-md-12">
+                            <ul>
+                                <li><i class="fa fa-user"></i>
+                                    {% if comment.author.get_full_name %}
+                                        {{ request.user.get_full_name }}
+                                    {% else %}
+                                        {{ comment.author.username }}
+                                    {% endif %}
+                                </li>
+                                <li><i class="fa fa-calendar"></i>{{ comment.date|jalali_date }}</li>
+                                <li>
+                                    <button class="btn btn-info" onclick="articleCommentReplay({{ comment.id }})">پاسخ
+                                    </button>
+                                </li>
+                            </ul>
+                        </div>
+                        <div class="col-md-12">
+                            <p>
+                                {{ comment.text|linebreaks }}
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {% if comment.replay.all %}
+                hello
+                {% for comment in comment.replay.articlecomments_set.all %}
+                    <div class="row comment-box comment-replay">
+                        <div class="col-md-3">
+                            <img src="{{ comment.author.profile_image.url }}" alt="">
+                        </div>
+                        <div class="col-md-9">
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <ul>
+                                        <li><i class="fa fa-user"></i>
+                                            {% if comment.author.get_full_name %}
+                                                {{ request.user.get_full_name }}
+                                            {% else %}
+                                                {{ comment.author.username }}
+                                            {% endif %}
+                                        </li>
+                                        <li><i class="fa fa-calendar"></i>{{ comment.date|jalali_date }}</li>
+                                        <li><i class="fa fa-clock-o"></i></li>
+
+                                    </ul>
+                                </div>
+                                <div class="col-md-12">
+                                    <p>
+                                        {{ comment.text|linebreaks }}
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                {% endfor %}
+            {% endif %}
+        {% endfor %}
+    {% else %}
+        <div class="row comment-box">
+            <div class="col-md-12 text-center alert-danger alert">
+                نظری ثبت نشده است. شما اولین نفر باشید!
+            </div>
+        </div>
+    {% endif %}
+</div>

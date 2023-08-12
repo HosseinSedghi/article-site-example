@@ -1,0 +1,20 @@
+{% extends 'shared/layout.html' %}
+{% load poll_extras %}
+
+{% block title %}
+    جزئیات مقاله
+{% endblock %}
+
+{% block content %}
+    <div class="single_post">
+        <div class="container-fluid">
+            <div class="col-md-2"></div>
+            <div class="col-md-8">
+                {% include 'includes/article_includes/article-detail.html' %}
+                {% include 'includes/article_includes/article-author.html' %}
+                {% include 'includes/article_includes/comment-form.html' %}
+                {% include 'includes/article_includes/comment-boxes.html' %}
+            </div>
+        </div>
+    </div>
+{% endblock %}

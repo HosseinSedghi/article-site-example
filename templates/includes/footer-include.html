@@ -1,0 +1,44 @@
+<div class="footer">
+    <div class="container-fluid">
+        <div class="col-md-5">
+            <div class="footer-box">
+                <span class="title">{{ site_data.site_name }}</span>
+                <p>
+                    {{ site_data.about_site|linebreaks }}
+                </p>
+            </div>
+        </div>
+        {% for link_box in link_boxes %}
+            <div class="col-md-2">
+                <div class="footer-box">
+                    <span class="title">{{ link_box.title}}</span>
+                    <ul>
+                        {% for link in link_box.links_set.all %}
+                            <li><a href="{{ link.link }}">{{ link.name }}</a></li>
+                        {% endfor %}
+
+                    </ul>
+                </div>
+            </div>
+        {% endfor %}
+
+        <div class="col-md-3">
+            <div class="footer-box contact-box">
+                <span class="title">تماس با ما</span>
+                <p><i class="fa fa-phone"></i> {{ site_data.phone_number }}</p>
+                <p><i class="fa fa-envelope-o"></i> {{ site_data.email }}</p>
+                <p><i class="fa fa-map-marker"></i> {{ site_data.address }} </p>
+            </div>
+        </div>
+        <div class="clear-fix"></div>
+    </div>
+</div>
+<div class="end-wrapper">
+    <div class="container-fluid">
+        <div class="col-md-6">
+            <div class="copy-r">
+                <p>&copy; {{ site_data.copy_right }}</p>
+            </div>
+        </div>
+    </div>
+</div>

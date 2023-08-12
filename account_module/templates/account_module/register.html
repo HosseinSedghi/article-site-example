@@ -1,0 +1,49 @@
+{% extends 'account_module/account_layout.html' %}
+
+{% block form_title %}
+    Register
+{% endblock %}
+
+{% block action %}
+    {% url 'register-page' %}
+{% endblock %}
+
+{% block content %}
+    <div class="wrap-input100 validate-input"
+    {% if register_form.username.errors %}data-validate="{{ register_form.username.errors }}"{% endif %}>
+        {{ register_form.username }}
+        <span class="focus-input100" data-placeholder="Username"></span>
+    </div>
+
+    <div class="wrap-input100 validate-input" data-validate="Valid email is: a@b.c">
+        {{ register_form.email }}
+        <span class="focus-input100" data-placeholder="Email"></span>
+    </div>
+    <div class="wrap-input100 validate-input" data-validate="<i>Enter</i>">
+						<span class="btn-show-pass">
+							<i class="zmdi zmdi-eye"></i>
+						</span>
+        {{ register_form.password }}
+        <span class="focus-input100" data-placeholder="Password"></span>
+    </div>
+
+    <div class="wrap-input100 validate-input" data-validate="Enter Confirm password">
+						<span class="btn-show-pass">
+							<i class="zmdi zmdi-eye"></i>
+						</span>
+        {{ register_form.confirm_password }}
+        <span class="focus-input100" data-placeholder="Password"></span>
+    </div>
+{% endblock %}
+
+{% block btn_text %}
+    Register
+{% endblock %}
+
+{% block footer_text_link %}
+
+{% endblock %}
+
+{% block footer_text %}
+Login
+{% endblock %}

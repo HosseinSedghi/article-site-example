@@ -1,10 +1,5 @@
-@font-face {
-	font-family: "seo90";
-	src: url("fonts/Vazir-Medium-FD.woff") format('woff');
-}
-
 * {
-	font-family: 'seo90', tahoma;
+	font-family: IRANSansWeb, sans-serif;
 	font-size: 14px;
 	font-weight: normal;
 	box-sizing: border-box;
@@ -17,7 +12,7 @@ html {
 }
 
 body {
-	font-family: 'seo90', tahoma;
+	font-family: IRANSansWeb, sans-serif, sans-serif;
 	direction: rtl;
 	overflow-x: hidden !important;
 	margin: 0;
@@ -104,42 +99,42 @@ h1,
 .h1 {
 	font-size: 22px !important;
 	line-height: 1.5;
-	font-family: 'seo90', tahoma;
+	font-family: IRANSansWeb, sans-serif;
 }
 
 h2,
 .h2 {
 	font-size: 20px !important;
 	line-height: 1.5;
-	font-family: 'seo90', tahoma;
+	font-family: IRANSansWeb, sans-serif;
 }
 
 h3,
 .h3 {
 	font-size: 18px !important;
 	line-height: 1.5;
-	font-family: 'seo90', tahoma;
+	font-family: IRANSansWeb, sans-serif;
 }
 
 h4,
 .h4 {
 	font-size: 16px !important;
 	line-height: 1.5;
-	font-family: 'seo90', tahoma;
+	font-family: IRANSansWeb, sans-serif;
 }
 
 h5,
 .h5 {
 	font-size: 14px !important;
 	line-height: 1.5;
-	font-family: 'seo90', tahoma;
+	font-family: IRANSansWeb, sans-serif;
 }
 
 h6,
 .h6 {
 	font-size: 12px !important;
 	line-height: 1.5;
-	font-family: 'seo90', tahoma;
+	font-family: IRANSansWeb, sans-serif;
 }
 
 button,
@@ -1154,19 +1149,6 @@ li:focus {
 	position: relative;
 	right: 0;
 	border-bottom: 1px dashed #2d2b2b;
-}
-
-.footer .footer-box ul li a:before {
-	content: "\f104";
-	font-family: FontAwesome;
-	padding-left: 8px;
-	margin-left: 3px;
-	font-size: 9px;
-}
-
-.footer .footer-box ul li a:hover:before {
-	color: #000;
-	border-bottom: 1px solid #000;
 }
 
 .footer .footer-box ul li:last-child a {

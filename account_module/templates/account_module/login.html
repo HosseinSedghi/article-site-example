@@ -1,0 +1,35 @@
+{% extends 'account_module/account_layout.html' %}
+
+{% block form_title %}
+    Login
+{% endblock %}
+
+{% block action %}
+    {% url 'login-page' %}
+{% endblock %}
+
+{% block content %}
+    <div class="wrap-input100 validate-input" data-validate="Username">
+        {{ login_form.username }}
+        <span class="focus-input100" data-placeholder="Username"></span>
+    </div>
+    <div class="wrap-input100 validate-input" data-validate="<i>Enter</i>">
+						<span class="btn-show-pass">
+							<i class="zmdi zmdi-eye"></i>
+						</span>
+        {{ login_form.password }}
+        <span class="focus-input100" data-placeholder="Password"></span>
+    </div>
+{% endblock %}
+
+{% block btn_text %}
+    Login
+{% endblock %}
+
+{% block footer_text_link %}
+    {% url 'forget-password-page' %}
+{% endblock %}
+
+{% block footer_text %}
+    Forget password
+{% endblock %}

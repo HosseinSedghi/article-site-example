@@ -1,0 +1,32 @@
+{% load poll_extras %}
+
+<div class="row">
+    <div class="col-md-2"></div>
+    <div class="col-md-8">
+        <div class="post_img">
+            <img src="{{ article.image.url }}" alt="">
+        </div>
+    </div>
+    <div class="col-md-2"></div>
+</div>
+<div class="posts_meta text-center">
+    <span><i class="fa fa-comment-o"></i> 25 نظر</span>
+    <span><i class="fa fa-archive"></i>
+        {% if article.category.first.parent %}
+            {{ article.category.first.parent }}
+        {% else %}
+            {{ article.category.first }}
+        {% endif %}
+                    </span>
+    <span><i class="fa fa-calendar"></i> {{ article.create_date|jalali_date }}</span>
+</div>
+<div class="post_content">
+    <h4>| {{ article.title }}
+        {% if article.is_special %}
+            <span class="badge alert-danger">ویژه</span>
+        {% endif %}
+    </h4>
+    <p>
+        {{ article.text|linebreaks }}
+    </p>
+</div>

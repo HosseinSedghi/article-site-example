@@ -1,0 +1,21 @@
+<div class="comments_form">
+    {% if request.user.is_authenticated %}
+        <h5>دیدگاه شما </h5>
+        <form action="{% url 'article-detail-page' slug=article.slug %}" method="post">
+            {% csrf_token %}
+            <div class="form-row">
+                <div class="col-md-12">
+                    {{ comment_form.replay }}
+                    {{ comment_form.comment }}
+                </div>
+                <div class="col-md-12">
+                    <input type="submit" class="btn btn-primary" value="ثبت نظر">
+                </div>
+            </div>
+        </form>
+    {% else %}
+        <div class="alert alert-danger">
+            برای کامنت گذاشتن باید <a href="">لاگین</a> کنید
+        </div>
+    {% endif %}
+</div>

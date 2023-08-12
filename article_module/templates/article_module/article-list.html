@@ -1,0 +1,87 @@
+{% extends 'shared/layout.html' %}
+{% load poll_extras %}
+{% load humanize %}
+
+{% block title %}
+    لیست مقالات
+{% endblock %}
+
+{% block content %}
+    <div class="latest-posts">
+        <div class="container-fluid">
+            {% if page_obj %}
+                <div class="blog-title-span">
+                    {% if request.resolver_match.url_name == 'special-article-list-page' %}
+                        <span class="title"> مطالب ویژه</span>
+                    {% else %}
+                        <span class="title"> مطالب</span>
+                    {% endif %}
+                </div>
+                {% for article in page_obj %}
+                    <div class="col-md-3">
+                        <div class="post-box">
+                            <a href="{% url 'article-detail-page' slug=article.slug %}">
+                                <figure>
+                                    <img src="{{ article.image.url }}" alt="">
+                                    {% if article.is_special %}
+                                        <figcaption class="view">
+                                            <span class="badge bg-danger">ویژه</span>
+                                        </figcaption>
+                                    {% endif %}
+                                </figure>
+                            </a>
+                            <div class="text-p">
+                                <h4 class="text-center"><a href="">{{ article.title }}</a></h4>
+                                <p class="article-box_body-font-size">
+                                    {{ article.text|truncatechars:'85' }}
+                                </p>
+                                <div>
+                                    <div>
+                                        <i class="fa fa-user"></i>
+                                        <a href="{% url 'article-detail-page' slug=article.slug %}">
+                                            {% if article.author.get_full_name %}
+                                                {{ article.author.get_full_name }}
+                                            {% else %}
+                                                {{ article.author.username }}
+                                            {% endif %}
+                                        </a>
+                                        <div class="clear-fix"></div>
+                                        <i class="fa fa-calendar"></i>
+                                        {{ article.create_date|jalali_date }}
+                                    </div>
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+                {% endfor %}
+            {% else %}
+                <div class="blog-title-span">
+                    <span class="title">مقاله یافت نشد</span>
+                </div>
+            {% endif %}
+            {% if page_obj.has_other_pages %}
+                <div class="col-md-12 text-center">
+                    <nav aria-label="Page navigation example">
+                        <ul class="pagination">
+                            {% if page_obj.has_previous %}
+                                <li class="page-item"><a class="page-link"
+                                                         href="?page={{ page_obj.previous_page_number }}&search={{ search_text }}">قبلی</a></li>
+                            {% endif %}
+                            {% for pageNumber in page_obj.paginator.page_range %}
+                                <li class="page-item"><a
+                                        class="{% if page_obj.number == pageNumber %}active-pagination-btn{% endif %} page-link"
+                                        href="?page={{ pageNumber }}&search={{ search_text }}">{{ pageNumber }}</a></li>
+                            {% endfor %}
+
+                            {% if page_obj.has_next %}
+                                <li class="page-item"><a class="page-link"
+                                                         href="?page={{ page_obj.next_page_number }}&search={{ search_text }}">بعدی</a></li>
+                            {% endif %}
+                        </ul>
+                    </nav>
+                </div>
+            {% endif %}
+        </div>
+    </div>
+{% endblock %}
