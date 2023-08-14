@@ -1,0 +1,30 @@
+{% extends 'shared/layout.html' %}
+
+{% block title %}
+    درباره ما
+{% endblock %}
+
+{% block content %}
+    <div class="single_post">
+        <div class="container-fluid">
+            <div class="col-md-2"></div>
+            <div class="col-md-8">
+                <div class="post_content">
+                    <h2 class="text-center">{{ site_data.site_name }}</h2>
+                    <p class="text-justify">
+                        {{ site_data.about_site }}
+                    </p>
+                    <div class="col-md-6">
+                        <div class="footer-box contact-box">
+                            <br>
+                            <br>
+                            <p><i class="fa fa-phone"></i> {{ site_data.phone_number }}</p>
+                            <p><i class="fa fa-envelope-o"></i> {{ site_data.email }}</p>
+                            <p><i class="fa fa-map-marker"></i> {{ site_data.address }} </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}

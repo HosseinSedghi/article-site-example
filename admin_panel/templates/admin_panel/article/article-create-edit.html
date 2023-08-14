@@ -1,0 +1,77 @@
+{% extends 'shared/admin-layout.html' %}
+
+{% block title %}
+    article create
+{% endblock %}
+
+{% block page-title %}
+    {% if request.resolver_match.url_name == 'admin-article-create-page' %}
+        اضافه کردن مقاله جدید
+    {% elif request.resolver_match.url_name == 'admin-article-edit-page' %}
+        ویرایش کردن مقاله
+    {% endif %}
+
+{% endblock %}
+
+{% block content %}
+    <section class="content">
+        <div class="row">
+            <div class="col-md-12">
+                <div class="box box-success">
+                    <div class="box-header with-border">
+                        <h3 class="box-title">
+                            {% if request.resolver_match.url_name == 'admin-article-create-page' %}
+                                فرم افزودن مقاله
+                            {% elif request.resolver_match.url_name == 'admin-article-edit-page' %}
+                                فرم ویرایش مقاله
+                            {% endif %}
+                        </h3>
+                    </div>
+                    <!-- /.box-header -->
+                    <div class="box-body">
+                        <form action="{% url 'admin-article-create-page' %}" method="post"
+                              enctype="multipart/form-data">
+                            {% csrf_token %}
+                            <div class="col-md-6">
+                                {{ form.title }}
+                            </div>
+                            <div class="col-md-6">
+                                {{ form.slug }}
+                            </div>
+                            <div class="col-md-6">
+                                {{ form.category }}
+                            </div>
+                            <div class="col-md-6">
+                                {{ form.image }}
+                            </div>
+                            <div class="col-md-6">
+                                <label for="">ویژه / عادی</label>
+                                {{ form.is_special }}
+                            </div>
+                            <div class="col-md-6">
+                                <select name="status" id="id_status" class="form-control">
+                                    {% if request.user.is_superuser %}
+                                        <option value="publish">انتشار</option>
+                                        <option value="draft">پیش نویس</option>
+                                        <option value="lock">آماده برای برسی</option>
+                                        <option value="back">برگشت داده شده</option>
+                                    {% else %}
+                                        <option value="draft">پیش نویس</option>
+                                        <option value="lock">آماده برای برسی</option>
+                                    {% endif %}
+                                </select>
+                            </div>
+                            <div class="col-md-12">
+                                {{ form.text }}
+                            </div>
+                            <div class="col-md-12">
+                                <input type="submit" class="btn btn-success" value="ثبت مقاله">
+                            </div>
+                        </form>
+                    </div>
+                    <!-- /.box-body -->
+                </div>
+            </div>
+        </div>
+    </section>
+{% endblock %}

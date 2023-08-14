@@ -1,0 +1,109 @@
+{% load thumbnail %}
+
+<aside class="main-sidebar">
+    <!-- sidebar: style can be found in sidebar.less -->
+    <section class="sidebar">
+        <!-- Sidebar user panel -->
+        <div class="user-panel">
+            <div class="pull-right image">
+                {% thumbnail request.user.profile_image "150x150" crop="center" quality=80 as img %}
+                    <img src="{{ img.url }}" class="img-circle" alt="User Image">
+                {% endthumbnail %}
+            </div>
+            <div class="pull-right info">
+                <p>
+                    {% if request.user.get_full_name %}
+                        {{ request.user.get_full_name }}
+                    {% else %}
+                        {{ request.user.username }}
+                    {% endif %}
+                </p>
+                <a href="#"><i class="fa fa-circle text-success"></i>
+                    {% if request.user.is_superuser %}
+                        ادمین
+                    {% elif request.user.is_author %}
+                        نویسنده
+                    {% else %}
+                        کاربر عادی
+                    {% endif %}
+                </a>
+            </div>
+        </div>
+        <ul class="sidebar-menu" data-widget="tree">
+            <li class="header">منو</li>
+            <li class="{% if request.resolver_match.url_name == 'admin-home-page' %}active{% endif %}">
+                <a href="{% url 'admin-home-page' %}">
+                    <i class="fa fa-home"></i> <span>صفحه اصلی</span>
+                    <span class="pull-left-container"></span>
+                </a>
+            </li>
+            <li class="treeview
+                {% if request.resolver_match.url_name == 'admin-article-list-page' or request.resolver_match.url_name == 'admin-article-create-page' %}active{% endif %}">
+                <a href="#">
+                    <i class="fa fa-book"></i> <span>مقالات</span>
+                    <span class="pull-left-container">
+                        <i class="fa fa-angle-right pull-left"></i>
+                    </span>
+                </a>
+                <ul class="treeview-menu">
+                    <li class="{% if request.resolver_match.url_name == 'admin-article-list-page' %}active{% endif %}">
+                        <a href="{% url 'admin-article-list-page' %}"><i class="fa fa-circle-o"></i> لیست مقالات</a>
+                    </li>
+                    <li class="{% if request.resolver_match.url_name == 'admin-article-create-page' %}active{% endif %}">
+                        <a href="{% url 'admin-article-create-page' %}"><i class="fa fa-circle-o"></i> اضافه کردن
+                            مقاله</a></li>
+                </ul>
+            </li>
+            <li class="treeview
+                    {% if request.resolver_match.url_name == 'admin-category-list-page' or request.resolver_match.url_name == 'admin-category-create-page' %}active{% endif %}">
+                <a href="#">
+                    <i class="fa fa-archive"></i> <span>دسته بندی</span>
+                    <span class="pull-left-container">
+                        <i class="fa fa-angle-right pull-left"></i>
+                    </span>
+                </a>
+                <ul class="treeview-menu">
+                    <li class="{% if request.resolver_match.url_name == 'admin-category-list-page' %}active{% endif %}">
+                        <a href="{% url 'admin-category-list-page' %}"><i class="fa fa-circle-o"></i> لیست دسته
+                            بندی ها</a></li>
+                    {% if request.user.is_superuser %}
+                        <li class="{% if request.resolver_match.url_name == 'admin-category-create-page' %}active{% endif %}">
+                            <a href="{% url 'admin-category-create-page' %}"><i class="fa fa-circle-o"></i>
+                                اضافه
+                                کردن دسته بندی</a></li>
+                    {% endif %}
+                </ul>
+            </li>
+            {% if request.user.is_superuser %}
+                <li class="treeview
+                        {% if request.resolver_match.url_name == 'admin-user-list-page' %}active{% endif %}">
+                    <a href="#">
+                        <i class="fa fa-users"></i> <span>کاربران</span>
+                        <span class="pull-left-container">
+                        <i class="fa fa-angle-right pull-left"></i>
+                    </span>
+                    </a>
+                    <ul class="treeview-menu">
+                        <li class="{% if request.resolver_match.url_name == 'admin-user-list-page' %}active{% endif %}">
+                            <a
+                                    href="{% url 'admin-user-list-page' %}"><i class="fa fa-circle-o"></i> لیست کاربران</a>
+                        </li>
+                    </ul>
+                </li>
+            {% endif %}
+            <li class="{% if request.resolver_match.url_name == 'admin-user-detail-page' %}active{% endif %}">
+                <a href="{% url 'admin-user-detail-page' pk=request.user.id %}">
+                    <i class="fa fa-user"></i> <span>پروفایل</span>
+                    <span class="pull-left-container"></span>
+                </a>
+            </li>
+            <li class="{% if request.resolver_match.url_name == 'admin-user-change-password-page' %}active{% endif %}">
+                <a href="{% url 'admin-user-change-password-page' pk=request.user.id %}">
+                    <i class="fa fa-key"></i> <span>تغییر گذرواژه</span>
+                    <span class="pull-left-container"></span>
+                </a>
+            </li>
+        </ul>
+    </section>
+    <!-- /.sidebar -->
+</aside>

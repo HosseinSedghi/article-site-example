@@ -27,7 +27,7 @@ class Migration(migrations.Migration):
                 ('create_date', models.DateTimeField(auto_now_add=True)),
                 ('edit_date', models.DateTimeField(auto_now=True, null=True)),
                 ('publish_date', models.DateTimeField(blank=True, null=True)),
-                ('author', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='author', to=settings.AUTH_USER_MODEL)),
+                ('users', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='users', to=settings.AUTH_USER_MODEL)),
             ],
         ),
         migrations.CreateModel(
@@ -47,7 +47,7 @@ class Migration(migrations.Migration):
                 ('text', models.TextField()),
                 ('is_publish', models.BooleanField(default=False)),
                 ('article', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='article_module.article')),
-                ('author', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to=settings.AUTH_USER_MODEL)),
+                ('users', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to=settings.AUTH_USER_MODEL)),
                 ('replay', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='article_module.articlecomments')),
             ],
         ),

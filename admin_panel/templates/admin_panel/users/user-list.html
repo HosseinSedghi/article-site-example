@@ -1,0 +1,118 @@
+{% extends 'shared/admin-layout.html' %}
+{% load thumbnail %}
+
+{% block title %}
+    لیست کاربران در صفحه ادمین
+{% endblock %}
+
+{% block page-title %}
+    لیست کاربران <span style="font-size: 0.6em; color: gray;">(تعداد کاربران : {{ users_count }})</span>
+{% endblock %}
+
+{% block content %}
+    <section class="content">
+        <div class="row">
+            <div class="col-xs-12">
+                <div class="box">
+                    <div class="box-header">
+                        <div class="row">
+                            <div class="col-md-4">
+                                <h3 class="box-title">جدول لیست کاربران</h3>
+                            </div>
+                            <div class="col-md-8">
+                                <div class="row">
+                                    <form action="{% url 'admin-user-list-page' %}" method="get">
+                                        <div class="col-md-9">
+                                            <input type="text" name="search" class="form-control"
+                                                   placeholder="جستجو">
+                                        </div>
+                                        <div class="col-md-3">
+                                            <input type="submit" class="btn btn-success" value="جستوجو">
+                                        </div>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- /.box-header -->
+                    <div class="box-body table-responsive no-padding">
+                        <table class="table table-hover">
+                            <tbody>
+                            <tr>
+                                <th>عکس</th>
+                                <th>نام</th>
+                                <th>نام کاربری</th>
+                                <th>وضعیت</th>
+                                <th>مسئولیت</th>
+                                <th>تنظیمات</th>
+                            </tr>
+                            {% for user in page_obj %}
+                                <tr>
+                                    <td>
+                                        {% thumbnail user.profile_image '80x80' crop='center' quality=85 as img %}
+                                            <img src="{{ img.url }}" alt="">
+                                        {% endthumbnail %}
+                                    </td>
+                                    <td>
+                                        <a href="{% url 'admin-user-detail-page' pk=user.id %}">
+                                            {% if user.get_full_name %}
+                                                {{ user.get_full_name }}
+                                            {% else %}
+                                                ----------
+                                            {% endif %}
+                                        </a>
+                                    </td>
+                                    <td>{{ user.username }}</td>
+                                    <td>
+                                        {% if user.is_active %}
+                                            <span class="label label-success">فعال</span>
+                                        {% else %}
+                                            <span class="label label-danger">غیر فعال</span>
+                                        {% endif %}
+                                    </td>
+                                    <td>
+                                        {% if user.is_superuser %}
+                                            <span class="label label-info">ادمین</span>
+                                        {% elif user.is_author %}
+                                            <span class="label label-info">نویسنده</span>
+                                        {% else %}
+                                            <span class="label label-info">کاربر</span>
+                                        {% endif %}
+                                    </td>
+                                    <td>
+                                        <a href="" class="badge btn-info" title="ویرایش مقاله">
+                                            ویرایش
+                                        </a>
+                                        {% if user.is_special_user %}
+                                            <a class="badge btn-danger" title="ویرایش مقاله">
+                                                ویژه
+                                            </a>
+                                        {% endif %}
+                                    </td>
+                                </tr>
+                            {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                    <!-- /.box-body -->
+                </div>
+                {% if page_obj.has_other_pages %}
+                    <div class="box-footer clearfix">
+                        <ul class="pagination pagination-sm no-margin pull-right">
+                            {% if page_obj.has_previous %}
+                                <li><a href="?page={{ page_obj.previous_page_number }}&search={{ search_text }}">«</a>
+                                </li>
+                            {% endif %}
+                            {% for pageNumber in page_obj.paginator.page_range %}
+                                <li><a href="?page={{ pageNumber }}&search={{ search_text }}">{{ pageNumber }}</a></li>
+                            {% endfor %}
+                            {% if page_obj.has_next %}
+                                <li><a href="?page={{ page_obj.next_page_number }}&search={{ search_text }}">»</a></li>
+                            {% endif %}
+                        </ul>
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+    </section>
+{% endblock %}

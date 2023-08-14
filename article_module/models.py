@@ -28,7 +28,7 @@ class Article(models.Model):
     image = models.ImageField(upload_to='images/article_images')
     category = models.ManyToManyField(ArticleCategory, related_name='category')
     text = models.TextField()
-    author = models.ForeignKey(User, on_delete=models.CASCADE, null=True, blank=True, related_name='author')
+    author = models.ForeignKey(User, on_delete=models.CASCADE, null=True, blank=True, related_name='users')
     is_special = models.BooleanField(default=False)
     status = models.CharField(choices=STATUS, default='draft', max_length=20)
     create_date = models.DateTimeField(auto_now_add=True)
@@ -44,7 +44,7 @@ class ArticleComments(models.Model):
     author = models.ForeignKey(User, on_delete=models.CASCADE)
     text = models.TextField()
     is_publish = models.BooleanField(default=False)
-    replay = models.ForeignKey('ArticleComments', on_delete=models.CASCADE, null=True, blank=True)
+    replay = models.ForeignKey('ArticleComments', on_delete=models.CASCADE, related_name='comment_replay', null=True, blank=True)
     article = models.ForeignKey(Article, on_delete=models.CASCADE)
     date = models.DateTimeField(auto_now_add=True)
 
@@ -55,8 +55,18 @@ class ArticleComments(models.Model):
 class ArticleView(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE, null=True, blank=True)
     ip = models.CharField(max_length=30, null=True, blank=True)
-    date = models.DateTimeField(auto_now_add=True, null=True, blank=True)
+    date = models.DateTimeField(auto_now_add=True)
     article = models.ForeignKey(Article, on_delete=models.CASCADE)
 
     def __str__(self):
         return self.ip
+
+
+class ArticleLikes(models.Model):
+    article = models.ForeignKey(Article, on_delete=models.CASCADE)
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+
+
+class ArticleDisLikes(models.Model):
+    article = models.ForeignKey(Article, on_delete=models.CASCADE)
+    user = models.ForeignKey(User, on_delete=models.CASCADE)

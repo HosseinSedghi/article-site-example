@@ -4,7 +4,7 @@
 
     {#comment-replay#}
     {% if comments %}
-        <h5>نظرات </h5>
+        <h5>نظرات ({{ comments_count }})</h5>
         {% for comment in comments %}
             <div class="row comment-box">
                 <div class="col-md-3">
@@ -23,7 +23,7 @@
                                 </li>
                                 <li><i class="fa fa-calendar"></i>{{ comment.date|jalali_date }}</li>
                                 <li>
-                                    <button class="btn btn-info" onclick="articleCommentReplay({{ comment.id }})">پاسخ
+                                    <button class="btn btn-info" onclick="articleCommentReplay({{ comment.id }}, '{{ comment.author }}')">پاسخ
                                     </button>
                                 </li>
                             </ul>
@@ -36,9 +36,8 @@
                     </div>
                 </div>
             </div>
-            {% if comment.replay.all %}
-                hello
-                {% for comment in comment.replay.articlecomments_set.all %}
+            {% if comment.comment_replay.all %}
+                {% for comment in comment.comment_replay.all %}
                     <div class="row comment-box comment-replay">
                         <div class="col-md-3">
                             <img src="{{ comment.author.profile_image.url }}" alt="">
@@ -55,8 +54,6 @@
                                             {% endif %}
                                         </li>
                                         <li><i class="fa fa-calendar"></i>{{ comment.date|jalali_date }}</li>
-                                        <li><i class="fa fa-clock-o"></i></li>
-
                                     </ul>
                                 </div>
                                 <div class="col-md-12">

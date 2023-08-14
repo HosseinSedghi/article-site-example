@@ -1,4 +1,5 @@
 {% load static %}
+{% load thumbnail %}
 
 <div class="top-bar">
     <div class="container-fluid">
@@ -22,6 +23,15 @@
                             <input type="submit" class="btn" value="جستوجو">
                         </div>
                     </form>
+                {% elif request.resolver_match.url_name == 'users-article-list-page' %}
+                    <form action="{% url 'author-article-list-page' id=author_id %}" method="get">
+                        <div class="col-md-7">
+                            <input type="text" class="form-control" name="search" placeholder="جستوجو">
+                        </div>
+                        <div class="col-md-5">
+                            <input type="submit" class="btn" value="جستوجو">
+                        </div>
+                    </form>
                 {% endif %}
             </div>
         </div>
@@ -31,7 +41,7 @@
                     <div class="menu">
                         <ul>
                             {% if request.user.is_authenticated %}
-                                <li><a href="#">پنل کاربری</a></li>
+                                <li><a href="{% url 'admin-home-page' %}">پنل کاربری</a></li>
                                 <li><a href="{% url 'logout-page' %}">خروج</a></li>
                             {% else %}
                                 <li><a href="{% url 'login-page' %}">ورود</a></li>
@@ -52,7 +62,7 @@
                     <li><a href="{% url 'home-page' %}">خانه</a></li>
                     <li><a href="{% url 'article-list-page' %}">مقالات</a></li>
                     <li><a href="{% url 'special-article-list-page' %}">مقالات ویژه</a></li>
-                    <li><a href="#">درباره ما</a></li>
+                    <li><a href="{% url 'about-us-page' %}">درباره ما</a></li>
                     <li><a href="{% url 'ticket-page' %}">تماس با ما</a></li>
                     {% if request.user.is_superuser %}
                         <li><a href="http://127.0.0.1:8000/admin">پنل ادمین</a></li>
@@ -64,8 +74,9 @@
             {% if request.user.is_authenticated %}
                 <div class="menu">
                     {% if request.user.profile_image %}
-                        <img src="{{ request.user.profile_image.url }}" alt="" class="circle-image" width="40"
-                             height="40">
+                        {% thumbnail request.user.profile_image '40x40' crop='center' quality=80 as img %}
+                            <img src="{{ img.url }}" alt="" class="circle-image">
+                        {% endthumbnail %}
                     {% else %}
                         <img src="{% static 'img/profile-empty-image.png' %}" alt="" class="circle-image"
                              width="40"

@@ -1,0 +1,93 @@
+{% extends 'shared/admin-layout.html' %}
+{% load thumbnail %}
+
+{% block title %}
+    لیست دسته بندی ها در صفحه ادمین
+{% endblock %}
+
+{% block page-title %}
+    لیست دسته بندی ها
+{% endblock %}
+
+{% block content %}
+    <section class="content">
+        <div class="row">
+            <div class="col-xs-12">
+                <div class="box">
+                    <div class="box-header">
+                        <div class="row">
+                            <div class="col-md-12">
+                                <h3 class="box-title">جدول لیست دسته بندی ها</h3>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- /.box-header -->
+                    <div class="box-body table-responsive no-padding">
+                        <table class="table table-hover">
+                            <tbody>
+                            <tr>
+                                <th>عنوان</th>
+                                <th>وضعیت</th>
+                                <th>تعداد مقالات</th>
+                                <th>تنظیمات</th>
+                            </tr>
+                            {% for category in categories %}
+                                <tr>
+                                    <td>
+                                        {{ category.title }}
+                                    </td>
+                                    <td>
+                                        {% if category.is_active %}
+                                            <span class="label label-success">فعال</span>
+                                        {% else %}
+                                            <span class="label label-danger">غیر فعال</span>
+                                        {% endif %}
+                                    </td>
+                                    <td>
+                                        {{ category.category.all.count }}
+                                    </td>
+                                    <td>
+                                        <a href="{% url 'admin-category-edit-page' pk=category.id %}" class="badge btn-info" title="ویرایش مقاله">
+                                            ویرایش
+                                        </a>
+                                        <a onclick="deleteCategory({{ category.id }})" class="badge btn-danger" title="حذف مقاله">
+                                            حذف
+                                        </a>
+                                    </td>
+                                </tr>
+                                {% if category.children.all %}
+                                    {% for children in category.children.all %}
+                                        <tr>
+                                            <td style="padding-right: 30px;">
+                                                {{ children.title }}
+                                            </td>
+                                            <td>
+                                                {% if children.is_active %}
+                                                    <span class="label label-success">فعال</span>
+                                                {% else %}
+                                                    <span class="label label-danger">غیر فعال</span>
+                                                {% endif %}
+                                            </td>
+                                            <td>
+                                                {{ children.category.all.count }}
+                                            </td>
+                                            <td>
+                                                <a href="{% url 'admin-category-edit-page' pk=children.id %}" class="badge btn-info" title="ویرایش مقاله">
+                                                    ویرایش
+                                                </a>
+                                                <a onclick="deleteCategory({{ children.id }})" class="badge btn-danger" title="حذف مقاله">
+                                                    حذف
+                                                </a>
+                                            </td>
+                                        </tr>
+                                    {% endfor %}
+                                {% endif %}
+                            {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+{% endblock %}

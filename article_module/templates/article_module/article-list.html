@@ -13,6 +13,14 @@
                 <div class="blog-title-span">
                     {% if request.resolver_match.url_name == 'special-article-list-page' %}
                         <span class="title"> مطالب ویژه</span>
+                    {% elif request.resolver_match.url_name == 'users-article-list-page' %}
+                        <span class="title"> نویسنده
+                            {% if author.get_full_name %}
+                                {{ author.get_full_name }}
+                            {% else %}
+                                {{ author.username }}
+                            {% endif %}
+                        </span>
                     {% else %}
                         <span class="title"> مطالب</span>
                     {% endif %}
@@ -38,7 +46,7 @@
                                 <div>
                                     <div>
                                         <i class="fa fa-user"></i>
-                                        <a href="{% url 'article-detail-page' slug=article.slug %}">
+                                        <a href="{% url 'author-article-list-page' id=article.author.id %}">
                                             {% if article.author.get_full_name %}
                                                 {{ article.author.get_full_name }}
                                             {% else %}
@@ -66,7 +74,8 @@
                         <ul class="pagination">
                             {% if page_obj.has_previous %}
                                 <li class="page-item"><a class="page-link"
-                                                         href="?page={{ page_obj.previous_page_number }}&search={{ search_text }}">قبلی</a></li>
+                                                         href="?page={{ page_obj.previous_page_number }}&search={{ search_text }}">قبلی</a>
+                                </li>
                             {% endif %}
                             {% for pageNumber in page_obj.paginator.page_range %}
                                 <li class="page-item"><a
@@ -76,7 +85,8 @@
 
                             {% if page_obj.has_next %}
                                 <li class="page-item"><a class="page-link"
-                                                         href="?page={{ page_obj.next_page_number }}&search={{ search_text }}">بعدی</a></li>
+                                                         href="?page={{ page_obj.next_page_number }}&search={{ search_text }}">بعدی</a>
+                                </li>
                             {% endif %}
                         </ul>
                     </nav>

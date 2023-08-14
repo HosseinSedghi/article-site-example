@@ -1,0 +1,63 @@
+{% extends 'shared/admin-layout.html' %}
+
+{% block title %}
+    article create
+{% endblock %}
+
+{% block page-title %}
+    {% if request.resolver_match.url_name == 'admin-category-create-page' %}
+        اضافه کردن دسته بندی جدید
+    {% elif request.resolver_match.url_name == 'admin-category-edit-page' %}
+        ویرایش کردن دسته بندی
+    {% endif %}
+
+{% endblock %}
+
+{% block content %}
+    <section class="content">
+        <div class="row">
+            <div class="col-md-12">
+                <div class="box box-success">
+                    <div class="box-header with-border">
+                        <h3 class="box-title">
+                            {% if request.resolver_match.url_name == 'admin-category-create-page' %}
+                                فرم افزودن دسته بندی
+                            {% elif request.resolver_match.url_name == 'admin-category-edit-page' %}
+                                فرم ویرایش دسته بندی
+                            {% endif %}
+                        </h3>
+                    </div>
+                    <!-- /.box-header -->
+                    <div class="box-body">
+                        <form action="
+                                {% if request.resolver_match.url_name == 'admin-category-create-page' %}{% url 'admin-category-create-page' %}{% else %}{% url 'admin-category-edit-page' pk=articlecategory.id %}{% endif %}"
+                              method="post">
+                            {% csrf_token %}
+                            <div class="col-md-12">
+                                {{ form.title }}
+                            </div>
+                            <div class="col-md-12">
+                                {{ form.slug }}
+                            </div>
+                            <div class="col-md-12">
+                                {{ form.parent }}
+                            </div>
+                            <div class="col-md-12">
+                                {{ form.is_active.label }}
+                                {{ form.is_active }}
+                            </div>
+                            <div class="col-md-12">
+                                {% if request.resolver_match.url_name == 'admin-category-create-page' %}
+                                    <input type="submit" class="btn btn-success" value="ثبت دسته بندی">
+                                {% else %}
+                                    <input type="submit" class="btn btn-info" value="ویرایش دسته بندی">
+                                {% endif %}
+                            </div>
+                        </form>
+                    </div>
+                    <!-- /.box-body -->
+                </div>
+            </div>
+        </div>
+    </section>
+{% endblock %}

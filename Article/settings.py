@@ -42,12 +42,14 @@ INSTALLED_APPS = [
     'account_module',
     'article_module',
     'site_module',
-    'polls',
     'contact_module',
+    'admin_panel',
+    'packages',
+    'polls',
     # external packages
     'django_render_partial',
     'jalali_date',
-    'sweetify',
+    'sorl.thumbnail'
 ]
 
 MIDDLEWARE = [
@@ -61,6 +63,8 @@ MIDDLEWARE = [
 ]
 
 ROOT_URLCONF = 'Article.urls'
+
+LOGIN_URL = '/account/login'
 
 TEMPLATES = [
     {
