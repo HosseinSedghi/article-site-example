@@ -103,6 +103,12 @@
                     <span class="pull-left-container"></span>
                 </a>
             </li>
+            <li class="{% if request.resolver_match.url_name == 'admin-comment-page' %}active{% endif %}">
+                <a href="{% url 'admin-comment-page' %}">
+                    <i class="fa fa-comments"></i> <span>کامنت ها</span>
+                    <span class="pull-left-container"></span>
+                </a>
+            </li>
         </ul>
     </section>
     <!-- /.sidebar -->

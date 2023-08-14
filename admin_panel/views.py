@@ -10,7 +10,7 @@ from django.views.generic import TemplateView, CreateView, ListView, UpdateView,
 
 from account_module.models import User
 from admin_panel.forms import ArticleCreateEditForm, CategoryCreateEditForm, ChangePasswordForm
-from article_module.models import Article, ArticleCategory
+from article_module.models import Article, ArticleCategory, ArticleComments
 
 
 # Create your views here.
@@ -262,13 +262,82 @@ class AdminChangePasswordView(View):
             'form': form
         })
 
+
+# ======================================== Comment classes ======================================== #
+
+@method_decorator(login_required, name='dispatch')
+class AdminCommentListView(View):
+    def get(self, request):
+        if request.user.is_superuser:
+            comments = ArticleComments.objects.select_related('author').select_related('article').all()
+        else:
+            comments = ArticleComments.objects.select_related('author').select_related('article').filter(
+                author_id=request.user.id)
+        article_filter = request.GET.get('article_filter')
+        status_filter = request.GET.get('status_filter')
+
+        if request.user.is_superuser:
+            if article_filter and status_filter:
+                if status_filter == 'publish':
+                    comments = ArticleComments.objects.select_related('author').select_related('article').filter(
+                        article__title=article_filter, is_publish=True)
+                elif status_filter == 'draft':
+                    comments = ArticleComments.objects.select_related('author').select_related('article').filter(
+                        article__title=article_filter, is_publish=False)
+            elif article_filter and not status_filter:
+                comments = ArticleComments.objects.select_related('author').select_related('article').filter(
+                    article__title=article_filter)
+            elif status_filter and not article_filter:
+                if status_filter == 'publish':
+                    comments = ArticleComments.objects.select_related('author').select_related('article').filter(
+                        is_publish=True)
+                elif status_filter == 'draft':
+                    comments = ArticleComments.objects.select_related('author').select_related('article').filter(
+                        is_publish=False)
+        else:
+            if article_filter and status_filter:
+                if status_filter == 'publish':
+                    comments = ArticleComments.objects.select_related('author').select_related('article').filter(
+                        article__title=article_filter, is_publish=True, article__author_id=request.user.id)
+                elif status_filter == 'draft':
+                    comments = ArticleComments.objects.select_related('author').select_related('article').filter(
+                        article__title=article_filter, is_publish=False, article__author_id=request.user.id)
+            elif article_filter and not status_filter:
+                comments = ArticleComments.objects.select_related('author').select_related('article').filter(
+                    article__title=article_filter, article__author_id=request.user.id)
+            elif status_filter and not article_filter:
+                if status_filter == 'publish':
+                    comments = ArticleComments.objects.select_related('author').select_related('article').filter(
+                        is_publish=True, article__author_id=request.user.id)
+                elif status_filter == 'draft':
+                    comments = ArticleComments.objects.select_related('author').select_related('article').filter(
+                        is_publish=False, article__author_id=request.user.id)
+
+        if not status_filter:
+            status_filter = ''
+        if not article_filter:
+            article_filter = ''
+        paginator = Paginator(comments, 6)
+        page_obj = paginator.get_page(request.GET.get('page'))
+
+        return render(request, 'admin_panel/comments.html', {
+            'page_obj': page_obj,
+            'article_filter': article_filter,
+            'status_filter': status_filter,
+            'comment_count': ArticleComments.objects.all().count(),
+            'articles': Article.objects.all()
+        })
+
+
 # ======================================== Partial classes ======================================== #
 
 class HeaderPartial(TemplateView):
     template_name = 'includes/admin_includes/header-include.html'
 
+
 class FooterPartial(TemplateView):
     template_name = 'includes/admin_includes/footer-include.html'
+
 
 class LeftSideBarPartial(TemplateView):
     template_name = 'includes/admin_includes/left-side-bar-include.html'

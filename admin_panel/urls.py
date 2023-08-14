@@ -15,4 +15,6 @@ urlpatterns = [
     path('user-list', views.AdminUserListView.as_view(), name='admin-user-list-page'),
     path('user-detail/<pk>', views.AdminUserDetailView.as_view(), name='admin-user-detail-page'),
     path('user-change-password/<pk>', views.AdminChangePasswordView.as_view(), name='admin-user-change-password-page'),
+    # Comments URLs
+    path('comments', views.AdminCommentListView.as_view(), name='admin-comment-page')
 ]

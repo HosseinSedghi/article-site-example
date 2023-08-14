@@ -19,6 +19,9 @@
             <ul class="nav navbar-nav">
                 <!-- Messages: style can be found in dropdown.less-->
                 <li class="dropdown messages-menu">
+                    <a href="{% url 'home-page' %}">نمایش سایت</a>
+                </li>
+                <li class="dropdown messages-menu">
                     <a href="#" class="dropdown-toggle" data-toggle="dropdown">
                         <i class="fa fa-envelope-o"></i>
                         <span class="label label-success">4</span>
@@ -277,7 +280,8 @@
                         <!-- Menu Footer-->
                         <li class="user-footer">
                             <div class="pull-right">
-                                <a href="{% url 'admin-user-detail-page' pk=request.user.id %}" class="btn btn-success btn-flat">پروفایل</a>
+                                <a href="{% url 'admin-user-detail-page' pk=request.user.id %}"
+                                   class="btn btn-success btn-flat">پروفایل</a>
                             </div>
                             <div class="pull-left">
                                 <a href="{% url 'logout-page' %}" class="btn btn-success btn-flat">خروج</a>

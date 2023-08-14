@@ -46,7 +46,7 @@
                                 <div>
                                     <div>
                                         <i class="fa fa-user"></i>
-                                        <a href="{% url 'author-article-list-page' id=article.author.id %}">
+                                        <a>
                                             {% if article.author.get_full_name %}
                                                 {{ article.author.get_full_name }}
                                             {% else %}

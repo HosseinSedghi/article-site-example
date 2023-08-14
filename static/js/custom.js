@@ -7,7 +7,7 @@ function articleCommentReplay(commentId, commentAuthor) {
     }
 }
 
-function deleteCategory(categoryId) {
+function deleteComment(commentId) {
     Swal.fire({
         title: 'Are you sure?',
         text: "You won't be able to revert this!",
@@ -18,11 +18,17 @@ function deleteCategory(categoryId) {
         confirmButtonText: 'Yes, delete it!'
     }).then((result) => {
         if (result.isConfirmed) {
-            Swal.fire(
-                'Deleted!',
-                'Your file has been deleted.',
-                'success'
-            )
+            $.get('comments/', {
+                comment_id: commentId
+            }).then(res => {
+                if (res.status === 'success') {
+                    Swal.fire(
+                        'Deleted!',
+                        'Your file has been deleted.',
+                        'success'
+                    )
+                }
+            })
         }
     })
 }
