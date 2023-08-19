@@ -1,5 +1,6 @@
 {% extends 'shared/admin-layout.html' %}
 {% load static %}
+{% load thumbnail %}
 
 {% block title %}
     article create
@@ -20,7 +21,7 @@
             <div class="col-md-12">
                 <div class="box box-success">
                     <div class="box-header with-border">
-                        <h3 class="box-title">
+                        <h3 class="box-title tetxt">
                             {% if request.resolver_match.url_name == 'admin-article-create-page' %}
                                 فرم افزودن مقاله
                             {% elif request.resolver_match.url_name == 'admin-article-edit-page' %}
@@ -28,341 +29,72 @@
                             {% endif %}
                         </h3>
                     </div>
-                    <!-- /.box-header -->
                     <div class="box-body">
                         <form action="{% url 'admin-article-create-page' %}" method="post"
                               enctype="multipart/form-data">
                             {% csrf_token %}
-                            <div class="col-md-6">
-                                {{ form.title }}
+                            <div class="col-md-12">
+                                <input type="text" name="title" class="form-control" placeholder="عنوان مقاله">
                             </div>
-                            <div class="col-md-6">
-                                {{ form.slug }}
+                            <div class="col-md-12">
+                                <input type="text" name="slug" class="form-control" placeholder="اسلاگ مقاله">
                             </div>
-                            <div class="col-md-6">
-                                {{ form.category }}
+                            <div class="col-md-12">
+                                <input type="file" accept="image/*" class="form-control" name="image">
                             </div>
-                            <div class="col-md-6">
-                                {{ form.image }}
-                            </div>
-                            <div class="col-md-6">
-                                <label for="">ویژه / عادی</label>
-                                {{ form.is_special }}
-                            </div>
-                            <div class="col-md-6">
-                                <select name="status" id="id_status" class="form-control">
-                                    {% if request.user.is_superuser %}
-                                        <option value="publish">انتشار</option>
-                                        <option value="draft">پیش نویس</option>
-                                        <option value="lock">آماده برای برسی</option>
-                                        <option value="back">برگشت داده شده</option>
-                                    {% else %}
-                                        <option value="draft">پیش نویس</option>
-                                        <option value="lock">آماده برای برسی</option>
-                                    {% endif %}
+                            <div class="col-md-12">
+                                <select required name="category" id="id_category" multiple class="form-control">
+                                    {% for category in categories %}
+                                        <option value="{{ category.id }}">{{ category.title }}</option>
+                                    {% endfor %}
                                 </select>
                             </div>
                             <div class="col-md-12">
-                                <div class="box box-success">
-                                    <div class="box-header">
-                                        <h3 class="box-title">ویرایشگر TinyMCE
-                                            <small>فارسی شده توسط علیرضا حسینی زاده</small>
-                                        </h3>
-                                        <!-- tools box -->
-                                        <div class="pull-right box-tools">
-                                            <button type="button" class="btn btn-default btn-sm" data-widget="collapse"
-                                                    data-toggle="tooltip" title="" data-original-title="Collapse">
-                                                <i class="fa fa-minus"></i></button>
-                                            <button type="button" class="btn btn-default btn-sm" data-widget="remove"
-                                                    data-toggle="tooltip" title="" data-original-title="Remove">
-                                                <i class="fa fa-times"></i></button>
-                                        </div>
-                                        <!-- /. tools -->
-                                    </div>
-                                    <!-- /.box-header -->
-                                    <div class="box-body pad">
-                                        <form>
-                                            <div id="mceu_17" class="mce-tinymce mce-rtl mce-container mce-panel"
-                                                 hidefocus="1" tabindex="-1" role="application"
-                                                 style="visibility: hidden; border-width: 1px; width: 100%;">
-                                                <div id="mceu_17-body" class="mce-container-body mce-stack-layout">
-                                                    <div id="mceu_18"
-                                                         class="mce-toolbar-grp mce-rtl mce-container mce-panel mce-stack-layout-item mce-first"
-                                                         hidefocus="1" tabindex="-1" role="group">
-                                                        <div id="mceu_18-body"
-                                                             class="mce-container-body mce-stack-layout">
-                                                            <div id="mceu_19"
-                                                                 class="mce-rtl mce-container mce-toolbar mce-stack-layout-item mce-first mce-last"
-                                                                 role="toolbar">
-                                                                <div id="mceu_19-body"
-                                                                     class="mce-container-body mce-flow-layout">
-                                                                    <div id="mceu_20"
-                                                                         class="mce-rtl mce-container mce-flow-layout-item mce-first mce-btn-group"
-                                                                         role="group">
-                                                                        <div id="mceu_20-body">
-                                                                            <div id="mceu_0"
-                                                                                 class="mce-widget mce-btn mce-first mce-disabled"
-                                                                                 tabindex="-1" role="button"
-                                                                                 aria-label="Undo" aria-disabled="true">
-                                                                                <button role="presentation"
-                                                                                        type="button" tabindex="-1"><i
-                                                                                        class="mce-ico mce-i-undo"></i>
-                                                                                </button>
-                                                                            </div>
-                                                                            <div id="mceu_1"
-                                                                                 class="mce-widget mce-btn mce-last mce-disabled"
-                                                                                 tabindex="-1" role="button"
-                                                                                 aria-label="Redo" aria-disabled="true">
-                                                                                <button role="presentation"
-                                                                                        type="button" tabindex="-1"><i
-                                                                                        class="mce-ico mce-i-redo"></i>
-                                                                                </button>
-                                                                            </div>
-                                                                        </div>
-                                                                    </div>
-                                                                    <div id="mceu_21"
-                                                                         class="mce-rtl mce-container mce-flow-layout-item mce-btn-group"
-                                                                         role="group">
-                                                                        <div id="mceu_21-body">
-                                                                            <div id="mceu_2"
-                                                                                 class="mce-widget mce-btn mce-first"
-                                                                                 tabindex="-1" role="button"
-                                                                                 aria-label="Clear formatting">
-                                                                                <button role="presentation"
-                                                                                        type="button" tabindex="-1"><i
-                                                                                        class="mce-ico mce-i-removeformat"></i>
-                                                                                </button>
-                                                                            </div>
-                                                                            <div id="mceu_3" class="mce-widget mce-btn"
-                                                                                 tabindex="-1" role="button"
-                                                                                 aria-label="Preview">
-                                                                                <button role="presentation"
-                                                                                        type="button" tabindex="-1"><i
-                                                                                        class="mce-ico mce-i-preview"></i>
-                                                                                </button>
-                                                                            </div>
-                                                                            <div id="mceu_4"
-                                                                                 class="mce-widget mce-btn mce-last"
-                                                                                 tabindex="-1" role="button"
-                                                                                 aria-label="Source code">
-                                                                                <button role="presentation"
-                                                                                        type="button" tabindex="-1"><i
-                                                                                        class="mce-ico mce-i-code"></i>
-                                                                                </button>
-                                                                            </div>
-                                                                        </div>
-                                                                    </div>
-                                                                    <div id="mceu_22"
-                                                                         class="mce-rtl mce-container mce-flow-layout-item mce-btn-group"
-                                                                         role="group">
-                                                                        <div id="mceu_22-body">
-                                                                            <div id="mceu_5"
-                                                                                 class="mce-widget mce-btn mce-menubtn mce-fixed-width mce-listbox mce-first mce-btn-has-text"
-                                                                                 tabindex="-1" aria-labelledby="mceu_5"
-                                                                                 role="button" aria-label="Font Sizes"
-                                                                                 aria-haspopup="true">
-                                                                                <button id="mceu_5-open"
-                                                                                        role="presentation"
-                                                                                        type="button" tabindex="-1">
-                                                                                    <span class="mce-txt">11pt</span> <i
-                                                                                        class="mce-caret"></i></button>
-                                                                            </div>
-                                                                            <div id="mceu_6"
-                                                                                 class="mce-widget mce-btn mce-splitbtn mce-menubtn"
-                                                                                 role="button" tabindex="-1"
-                                                                                 aria-label="Bullet list"
-                                                                                 aria-haspopup="true">
-                                                                                <button type="button" hidefocus="1"
-                                                                                        tabindex="-1"><i
-                                                                                        class="mce-ico mce-i-bullist"></i>
-                                                                                </button>
-                                                                                <button type="button" class="mce-open"
-                                                                                        hidefocus="1" tabindex="-1"><i
-                                                                                        class="mce-caret"></i></button>
-                                                                            </div>
-                                                                            <div id="mceu_7"
-                                                                                 class="mce-widget mce-btn mce-splitbtn mce-menubtn mce-last"
-                                                                                 role="button" tabindex="-1"
-                                                                                 aria-label="Numbered list"
-                                                                                 aria-haspopup="true">
-                                                                                <button type="button" hidefocus="1"
-                                                                                        tabindex="-1"><i
-                                                                                        class="mce-ico mce-i-numlist"></i>
-                                                                                </button>
-                                                                                <button type="button" class="mce-open"
-                                                                                        hidefocus="1" tabindex="-1"><i
-                                                                                        class="mce-caret"></i></button>
-                                                                            </div>
-                                                                        </div>
-                                                                    </div>
-                                                                    <div id="mceu_23"
-                                                                         class="mce-rtl mce-container mce-flow-layout-item mce-btn-group"
-                                                                         role="group">
-                                                                        <div id="mceu_23-body">
-                                                                            <div id="mceu_8"
-                                                                                 class="mce-widget mce-btn mce-first"
-                                                                                 tabindex="-1" role="button"
-                                                                                 aria-label="Align left">
-                                                                                <button role="presentation"
-                                                                                        type="button" tabindex="-1"><i
-                                                                                        class="mce-ico mce-i-alignleft"></i>
-                                                                                </button>
-                                                                            </div>
-                                                                            <div id="mceu_9" class="mce-widget mce-btn"
-                                                                                 tabindex="-1" role="button"
-                                                                                 aria-label="Align center">
-                                                                                <button role="presentation"
-                                                                                        type="button" tabindex="-1"><i
-                                                                                        class="mce-ico mce-i-aligncenter"></i>
-                                                                                </button>
-                                                                            </div>
-                                                                            <div id="mceu_10" class="mce-widget mce-btn"
-                                                                                 tabindex="-1" role="button"
-                                                                                 aria-label="Align right">
-                                                                                <button role="presentation"
-                                                                                        type="button" tabindex="-1"><i
-                                                                                        class="mce-ico mce-i-alignright"></i>
-                                                                                </button>
-                                                                            </div>
-                                                                            <div id="mceu_11"
-                                                                                 class="mce-widget mce-btn mce-last"
-                                                                                 tabindex="-1" role="button"
-                                                                                 aria-label="Justify">
-                                                                                <button role="presentation"
-                                                                                        type="button" tabindex="-1"><i
-                                                                                        class="mce-ico mce-i-alignjustify"></i>
-                                                                                </button>
-                                                                            </div>
-                                                                        </div>
-                                                                    </div>
-                                                                    <div id="mceu_24"
-                                                                         class="mce-rtl mce-container mce-flow-layout-item mce-btn-group"
-                                                                         role="group">
-                                                                        <div id="mceu_24-body">
-                                                                            <div id="mceu_12"
-                                                                                 class="mce-widget mce-btn mce-first"
-                                                                                 tabindex="-1" role="button"
-                                                                                 aria-label="Bold">
-                                                                                <button role="presentation"
-                                                                                        type="button" tabindex="-1"><i
-                                                                                        class="mce-ico mce-i-bold"></i>
-                                                                                </button>
-                                                                            </div>
-                                                                            <div id="mceu_13"
-                                                                                 class="mce-widget mce-btn mce-last"
-                                                                                 tabindex="-1" role="button"
-                                                                                 aria-label="Italic">
-                                                                                <button role="presentation"
-                                                                                        type="button" tabindex="-1"><i
-                                                                                        class="mce-ico mce-i-italic"></i>
-                                                                                </button>
-                                                                            </div>
-                                                                        </div>
-                                                                    </div>
-                                                                    <div id="mceu_25"
-                                                                         class="mce-rtl mce-container mce-flow-layout-item mce-last mce-btn-group"
-                                                                         role="group">
-                                                                        <div id="mceu_25-body">
-                                                                            <div id="mceu_14"
-                                                                                 class="mce-widget mce-btn mce-first"
-                                                                                 tabindex="-1" role="button"
-                                                                                 aria-label="Page break">
-                                                                                <button role="presentation"
-                                                                                        type="button" tabindex="-1"><i
-                                                                                        class="mce-ico mce-i-pagebreak"></i>
-                                                                                </button>
-                                                                            </div>
-                                                                            <div id="mceu_15"
-                                                                                 class="mce-widget mce-btn mce-menubtn"
-                                                                                 tabindex="-1" aria-labelledby="mceu_15"
-                                                                                 role="button" aria-label="Table"
-                                                                                 aria-haspopup="true">
-                                                                                <button id="mceu_15-open"
-                                                                                        role="presentation"
-                                                                                        type="button" tabindex="-1"><i
-                                                                                        class="mce-ico mce-i-table"></i>
-                                                                                    <i class="mce-caret"></i></button>
-                                                                            </div>
-                                                                            <div id="mceu_16"
-                                                                                 class="mce-widget mce-btn mce-last"
-                                                                                 tabindex="-1" role="button"
-                                                                                 aria-label="Insert/edit link">
-                                                                                <button role="presentation"
-                                                                                        type="button" tabindex="-1"><i
-                                                                                        class="mce-ico mce-i-link"></i>
-                                                                                </button>
-                                                                            </div>
-                                                                        </div>
-                                                                    </div>
-                                                                </div>
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                    <div id="mceu_26"
-                                                         class="mce-edit-area mce-rtl mce-container mce-panel mce-stack-layout-item"
-                                                         hidefocus="1" tabindex="-1" role="group"
-                                                         style="border-width: 1px 0px 0px;">
-                                                        <iframe id="mytextarea_ifr" frameborder="0"
-                                                                allowtransparency="true"
-                                                                title="ویرایشگر پیشرفته‌ی متن. برای دسترسی به منو کلیدهای ALT-F9، نوار ابزار ALT-F10 و برای مشاهده‌ی راهنما ALT-0 را فشار دهید."
-                                                                src="javascript:&quot;&quot;"
-                                                                style="width: 100%; height: 300px; display: block;"></iframe>
-                                                    </div>
-                                                    <div id="mceu_27"
-                                                         class="mce-statusbar mce-rtl mce-container mce-panel mce-stack-layout-item mce-last"
-                                                         hidefocus="1" tabindex="-1" role="group"
-                                                         style="border-width: 1px 0px 0px;">
-                                                        <div id="mceu_27-body"
-                                                             class="mce-container-body mce-flow-layout">
-                                                            <div id="mceu_28"
-                                                                 class="mce-path mce-flow-layout-item mce-first">
-                                                                <div role="button" class="mce-path-item mce-last"
-                                                                     data-index="0" tabindex="-1" id="mceu_28-0"
-                                                                     aria-level="1">p
-                                                                </div>
-                                                            </div>
-                                                            <div id="mceu_29"
-                                                                 class="mce-flow-layout-item mce-last mce-resizehandle">
-                                                                <i class="mce-ico mce-i-resize"></i></div>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                                <div class="mce-branding-powered-by"
-                                                     style="right: 0px; bottom: 37px;"></div>
-                                            </div>
-                                            <textarea id="mytextarea"
-                                                      style="width: 100%; height: 200px; font-size: 14px; line-height: 18px; border: 1px solid rgb(221, 221, 221); padding: 10px; display: none;"
-                                                      aria-hidden="true"> این ویرایشگر راست چین و فارسی شده و تنظیمات آن به صورت اختصاصی تنظیم شده است...</textarea>
-                                        </form>
-                                    </div>
-                                </div>
+                                <select name="author" id="id_author" class="form-control">
+                                    <option value="">نویسنده</option>
+                                    {% for author in authors %}
+                                        <option value="{{ author.id }}">{{ author.get_full_name }}</option>
+                                    {% endfor %}
+                                </select>
                             </div>
                             <div class="col-md-12">
-                                <input type="submit" class="btn btn-success" value="ثبت مقاله">
+                                <select name="status" id="id_status" class="form-control">
+                                    <option value="">وضعیت</option>
+                                    <option value="publish">انتشار</option>
+                                    <option value="draft">پیش نویس</option>
+                                    <option value="lock">آماده برای برسی</option>
+                                    <option value="back">برگشت داده شده</option>
+                                </select>
+                            </div>
+                            <div class="col-md-12">
+                                <label for="id_is_special">آیا این مقاله ویژه است؟</label>
+                                <input type="checkbox" name="is_special" id="id_is_special">
+                            </div>
+                            <div class="col-md-12">
+                                <textarea rows="8" name="text" class="form-control"
+                                          placeholder="متن اصلی مقاله"></textarea>
+                            </div>
+                            <div class="box-footer">
+                                <div class="col-md-12">
+                                    <input type="submit" value="ثبت مقاله">
+                                </div>
                             </div>
                         </form>
                     </div>
-                    <!-- /.box-body -->
                 </div>
             </div>
         </div>
     </section>
     <script src="{% static 'lib/admin_lte/bower_components/jquery/dist/jquery.min.js' %}"></script>
-    <!-- Bootstrap 3.3.7 -->
     <script src="{% static 'lib/admin_lte/bower_components/bootstrap/dist/js/bootstrap.min.js' %}"></script>
-    <!-- FastClick -->
     <script src="{% static 'lib/admin_lte/bower_components/fastclick/lib/fastclick.js' %}"></script>
-    <!-- AdminLTE App -->
     <script src="{% static 'lib/admin_lte/dist/js/adminlte.min.js' %}"></script>
-    <!-- AdminLTE for demo purposes -->
     <script src="{% static 'lib/admin_lte/dist/js/demo.js' %}"></script>
-    <!-- CK Editor -->
     <script src="{% static 'lib/admin_lte/bower_components/ckeditor/ckeditor.js' %}"></script>
-    <!-- TinyMCE Editor -->
     <script src="{% static 'lib/admin_lte/bower_components/tinymce/tinymce.min.js' %}"></script>
     <script>
         tinymce.init({
-            selector: 'textarea#mytextarea',
+            selector: 'textarea#55x',
             plugins: 'advlist autolink link lists preview table code pagebreak',
             menubar: false,
             language: 'fa',

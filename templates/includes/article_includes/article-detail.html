@@ -18,7 +18,7 @@
             {{ article.category.first }}
         {% endif %}
                     </span>
-    <span><i class="fa fa-calendar"></i> {{ article.create_date|jalali_date }}</span>
+    <span><i class="fa fa-calendar"></i> {{ article.create_date|jalali_date_humanize }}</span>
 </div>
 <div class="post_content">
     <h4>| {{ article.title }}
@@ -29,4 +29,30 @@
     <p>
         {{ article.text|linebreaks }}
     </p>
+
+    <div class="row">
+
+        {% if is_user_like %}
+            <div class="like-box col-md-6 pull-right text-left">
+                <i class="fa fa-thumbs-up fa-2x btn" style="color: forestgreen;"></i>
+                <b>{{ like_count }}</b>
+            </div>
+        {% else %}
+            <div class="like-box col-md-6 pull-right text-left">
+                <i class="fa fa-thumbs-up fa-2x btn"></i>
+                <b>{{ like_count }}</b>
+            </div>
+        {% endif %}
+        {% if is_user_dislike %}
+            <div class="like-box col-md-6 pull-left text-right">
+                <i class="fa fa-thumbs-down fa-2x fa-flip-horizontal btn" style="color: red;"></i>
+                <b>{{ dislike_count }}</b>
+            </div>
+        {% else %}
+            <div class="like-box col-md-6 pull-left text-right">
+                <i class="fa fa-thumbs-down fa-2x fa-flip-horizontal btn"></i>
+                <b>{{ dislike_count }}</b>
+            </div>
+        {% endif %}
+    </div>
 </div>

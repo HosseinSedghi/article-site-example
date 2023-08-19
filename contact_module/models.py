@@ -11,3 +11,4 @@ class Ticket(models.Model):
     text = models.TextField()
     date = models.DateTimeField(auto_now_add=True)
     user = models.ForeignKey(User, on_delete=models.CASCADE, null=True, blank=True)
+    is_view_by_admin = models.BooleanField(default=False)

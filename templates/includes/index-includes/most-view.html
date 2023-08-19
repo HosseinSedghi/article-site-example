@@ -1,0 +1,26 @@
+{% load static %}
+{% load poll_extras %}
+
+<div class="col-md-4">
+    <div class="r-sidebar">
+        <div class="special-posts">
+            <span class="title">پربازدید ترین</span><br>
+            {% for most_view_article in most_view_articles %}
+                <div class="special-box">
+                    <a href="{% url 'article-detail-page' slug=most_view_article.slug %}">
+                        <figure>
+                            <img src="{{ most_view_article.image.url }}" alt="">
+                            <figcaption class="txt">
+                                <h4>{{ most_view_article.title }}</h4>
+                                <span><i class="fa fa-calendar-o"></i> {{ most_view_article.create_date|jalali_date_humanize}}</span>
+                                <span><i class="fa fa-eye"></i> {{ most_view_article.articleview_set.all.count }}</span>
+                            </figcaption>
+                            <figcaption class="link"><i class="fa fa-external-link"></i>
+                            </figcaption>
+                        </figure>
+                    </a>
+                </div>
+            {% endfor %}
+        </div>
+    </div>
+</div>

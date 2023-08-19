@@ -1,7 +1,7 @@
-<div class="comments_form">
+<div class="comments_form" id="comment-replay-box">
     {% if request.user.is_authenticated %}
         <h5>دیدگاه شما </h5>
-        <h6>پاسخ برای <span id="comment-replay-text"></span></h6>
+        <h6 id="comment-replay-text"></h6>
         <form action="{% url 'article-detail-page' slug=article.slug %}" method="post">
             {% csrf_token %}
             <div class="form-row">

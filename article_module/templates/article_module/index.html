@@ -1,5 +1,27 @@
 {% extends 'shared/layout.html' %}
+{% load static %}
+{% load poll_extras %}
 
 {% block title %}
     صفحه اصلی
+{% endblock %}
+
+{% block content %}
+    <div class="clear-fix"></div>
+    {% include 'includes/index-includes/slider.html' %}
+    <div class="clear-fix"></div>
+    <div class="main-content">
+        <div class="container-fluid">
+            <div class="row">
+                {% include 'includes/index-includes/most-view.html' %}
+                {% include 'includes/index-includes/most-favorite.html' %}
+                <div class="col-md-4">
+
+                </div>
+            </div>
+        </div>
+        <div class="clear-fix"></div>
+        {% include 'includes/index-includes/last-articles.html' %}
+    </div>
+    <div class="clear-fix"></div>
 {% endblock %}

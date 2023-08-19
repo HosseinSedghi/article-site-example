@@ -1,5 +1,7 @@
 from django.db import models
 
+from article_module.models import Article
+
 
 # Create your models here.
 
@@ -31,3 +33,7 @@ class Links(models.Model):
 
     def __str__(self):
         return self.name
+
+
+class Slider(models.Model):
+    article = models.ForeignKey(Article, on_delete=models.CASCADE)

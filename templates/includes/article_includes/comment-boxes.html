@@ -16,14 +16,14 @@
                             <ul>
                                 <li><i class="fa fa-user"></i>
                                     {% if comment.author.get_full_name %}
-                                        {{ request.user.get_full_name }}
+                                        {{ comment.author.get_full_name }}
                                     {% else %}
                                         {{ comment.author.username }}
                                     {% endif %}
                                 </li>
-                                <li><i class="fa fa-calendar"></i>{{ comment.date|jalali_date }}</li>
+                                <li><i class="fa fa-calendar"></i>{{ comment.date|jalali_date_humanize }}</li>
                                 <li>
-                                    <button class="btn btn-info" onclick="articleCommentReplay({{ comment.id }}, '{{ comment.author }}')">پاسخ
+                                    <button class="btn btn-info" onclick="articleCommentReplay({{ comment.id }}, '{{ comment.author.get_full_name }}')">پاسخ
                                     </button>
                                 </li>
                             </ul>
@@ -36,8 +36,8 @@
                     </div>
                 </div>
             </div>
-            {% if comment.comment_replay.all %}
-                {% for comment in comment.comment_replay.all %}
+            {% if comment.comment_replay|filter_active_comment %}
+                {% for comment in comment.comment_replay|filter_active_comment %}
                     <div class="row comment-box comment-replay">
                         <div class="col-md-3">
                             <img src="{{ comment.author.profile_image.url }}" alt="">
@@ -48,12 +48,12 @@
                                     <ul>
                                         <li><i class="fa fa-user"></i>
                                             {% if comment.author.get_full_name %}
-                                                {{ request.user.get_full_name }}
+                                                {{ comment.author.get_full_name }}
                                             {% else %}
                                                 {{ comment.author.username }}
                                             {% endif %}
                                         </li>
-                                        <li><i class="fa fa-calendar"></i>{{ comment.date|jalali_date }}</li>
+                                        <li><i class="fa fa-calendar"></i>{{ comment.date|jalali_date_humanize }}</li>
                                     </ul>
                                 </div>
                                 <div class="col-md-12">

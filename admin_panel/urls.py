@@ -16,5 +16,11 @@ urlpatterns = [
     path('user-detail/<pk>', views.AdminUserDetailView.as_view(), name='admin-user-detail-page'),
     path('user-change-password/<pk>', views.AdminChangePasswordView.as_view(), name='admin-user-change-password-page'),
     # Comments URLs
-    path('comments', views.AdminCommentListView.as_view(), name='admin-comment-page')
+    path('comments', views.AdminCommentListView.as_view(), name='admin-comment-page'),
+    path('comment-delete', views.delete_comment, name='admin-comment-delete-page'),
+    path('convert-comment-to-publish', views.convert_comment_publish),
+    path('convert-comment-to-draft', views.convert_comment_draft),
+    # Ticket URLs
+    path('ticket-list', views.TicketListView.as_view(), name='admin-ticket-list-page'),
+    path('delete-ticket', views.delete_ticket),
 ]

@@ -24,7 +24,7 @@ class ArticleCreateEditForm(forms.Form):
             'required': 'این فیلد الزامی است'
         }
     )
-    Image = forms.ImageField(
+    image = forms.ImageField(
         required=True,
         widget=forms.FileInput(attrs={
             'class': 'form-control',
@@ -64,6 +64,7 @@ class ArticleCreateEditForm(forms.Form):
             'required': 'این فیلد الزامی است'
         }
     )
+
 
 class CategoryCreateEditForm(forms.ModelForm):
     class Meta:
@@ -140,3 +141,4 @@ class ChangePasswordForm(forms.Form):
             'required': 'این فیلد الزامی است'
         }
     )
+

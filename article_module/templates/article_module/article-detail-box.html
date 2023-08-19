@@ -1,0 +1,14 @@
+{% load poll_extras %}
+
+<div class="single_post" id="article-detail-box">
+    <div class="container-fluid">
+        <div class="col-md-2"></div>
+        <div class="col-md-8">
+            {% include 'includes/article_includes/article-detail.html' %}
+            {% include 'includes/article_includes/article-author.html' %}
+            {% include 'includes/article_includes/outher-article-by-user.html' %}
+            {% include 'includes/article_includes/comment-form.html' %}
+            {% include 'includes/article_includes/comment-boxes.html' %}
+        </div>
+    </div>
+</div>

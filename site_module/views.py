@@ -5,6 +5,8 @@ from site_module.models import SiteSetting, Links, LinkBoxes
 
 # Create your views here.
 
+
+
 class AboutUsView(TemplateView):
     template_name = 'site_module/about-us.html'
 
@@ -24,5 +26,3 @@ class FooterPartial(TemplateView):
         context['site_data'] = SiteSetting.objects.first()
         context['link_boxes'] = LinkBoxes.objects.all()
         return context
-
-

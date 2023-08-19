@@ -1,0 +1,47 @@
+{% load poll_extras %}
+
+<div class="latest-posts">
+    <div class="container-fluid">
+        <div class="blog-title-span">
+            <span class="title">آخرین مطالب</span>
+        </div>
+        {% for article in last_articles %}
+            <div class="col-md-3">
+                <div class="post-box">
+                    <a href="{% url 'article-detail-page' slug=article.slug %}">
+                        <figure>
+                            <img src="{{ article.image.url }}" alt="">
+                            {% if article.is_special %}
+                                <figcaption class="view">
+                                    <span class="badge bg-danger">ویژه</span>
+                                </figcaption>
+                            {% endif %}
+                        </figure>
+                    </a>
+                    <div class="text-p">
+                        <h4 class="text-center"><a href="">{{ article.title }}</a></h4>
+                        <p class="article-box_body-font-size">
+                            {{ article.text|truncatechars:'85' }}
+                        </p>
+                        <div>
+                            <div>
+                                <i class="fa fa-user"></i>
+                                <a>
+                                    {% if article.author.get_full_name %}
+                                        {{ article.author.get_full_name }}
+                                    {% else %}
+                                        {{ article.author.username }}
+                                    {% endif %}
+                                </a>
+                                <div class="clear-fix"></div>
+                                <i class="fa fa-calendar"></i>
+                                {{ article.create_date|jalali_date_humanize }}
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        {% endfor %}
+    </div>
+</div>

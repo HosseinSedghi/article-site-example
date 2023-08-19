@@ -24,7 +24,7 @@
                         </div>
                     </form>
                 {% elif request.resolver_match.url_name == 'users-article-list-page' %}
-                    <form action="{% url 'author-article-list-page' id=author_id %}" method="get">
+                    <form action="{% url 'users-article-list-page' id=author.id %}" method="get">
                         <div class="col-md-7">
                             <input type="text" class="form-control" name="search" placeholder="جستوجو">
                         </div>

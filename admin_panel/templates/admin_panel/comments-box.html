@@ -1,0 +1,208 @@
+{% load thumbnail %}
+
+<section class="content" id="comment-box">
+    <div class="row">
+        <div class="col-xs-12">
+            <div class="box">
+                <div class="box-header">
+                    <div class="row">
+                        <div class="col-md-4">
+                            <h3 class="box-title">جدول لیست کامنت ها</h3>
+                        </div>
+                        <div class="col-md-8">
+                            <div class="row">
+                                <form action="{% url 'admin-comment-page' %}" method="get">
+                                    <div class="col-md-4">
+                                        <select name="status_filter" id="id_status" class="form-control">
+                                            <option value="">وضعیت</option>
+                                            <option value="publish">انتشار</option>
+                                            <option value="draft">پیش نویس</option>
+                                        </select>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <select name="article_filter" id="id_author" class="form-control">
+                                            <option value="">مقاله</option>
+                                            {% for article in articles %}
+                                                <option value="{{ article.title }}">
+                                                    {{ article.title }}
+                                                </option>
+                                            {% endfor %}
+                                        </select>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <input type="submit" class="btn btn-success" value="جستوجو">
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- /.box-header -->
+                <div class="box-body table-responsive no-padding">
+                    <table class="table table-hover">
+                        <tbody>
+                        <tr>
+                            <th>نویسنده</th>
+                            <th>مقاله</th>
+                            <th>وضعیت</th>
+                            <th>متن</th>
+                            <th>تنظیمات</th>
+                        </tr>
+                        {% for comment in page_obj %}
+                            <tr>
+                                <td>
+                                    {% if comment.author.get_full_name %}
+                                        {{ comment.author.get_full_name }}
+                                    {% else %}
+                                        {{ comment.author.username }}
+                                    {% endif %}
+                                    {% if not comment.is_view_by_admin %}
+                                        <span class="badge btn-danger" style="font-size: 0.5em;">دیده نشده</span>
+                                    {% endif %}
+                                </td>
+                                <td>{{ comment.article.title|truncatechars_html:"20" }}</td>
+                                <td>
+                                    {% if comment.is_publish %}
+                                        <span onclick="convertCommentToDraft({{ comment.id }})" class="btn btn-success">فعال</span>
+                                    {% else %}
+                                        <span onclick="convertCommentToPublish({{ comment.id }})"
+                                              class="btn btn-danger">غیر فعال</span>
+                                    {% endif %}
+                                </td>
+                                <td>
+                                    <div style="background-color: #cecece; padding: 5px; border-radius: 2px;"
+                                         type="button" class="btn btn-default" data-toggle="modal"
+                                         data-target="#{{ comment.id }}">
+                                        مشاهده جزئیات
+                                    </div>
+                                </td>
+                                <td>
+                                    <a onclick="deleteComment({{ comment.id }})" class="badge btn-danger"
+                                       title="حذف کامنت">
+                                        حذف
+                                    </a>
+                                </td>
+                            </tr>
+                            <div class="modal fade" id="{{ comment.id }}" style="display: none;">
+                                <div class="modal-dialog">
+                                    <div class="modal-content">
+                                        <div class="modal-header">
+                                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                                <span aria-hidden="true">×</span></button>
+                                            <h4 class="modal-title">{{ comment.article.title }}</h4>
+                                        </div>
+                                        <div class="modal-body">
+                                            <h4 style="margin-bottom: 40px;">{{ comment.author.get_full_name }}</h4>
+                                            <p>
+                                                {{ comment.text|linebreaks }}
+                                            </p>
+                                        </div>
+                                        <div class="modal-footer">
+                                            <form action="{% url 'admin-comment-page' %}" method="post">
+                                                {% csrf_token %}
+                                                <input type="hidden" name="comment_id" value="{{ comment.id }}">
+                                                <input type="hidden" name="article_id" value="{{ comment.article.id }}">
+                                                <textarea name="comment_replay" rows="5"
+                                                          placeholder="پاسخ برای این کامنت"
+                                                          style="width: 100%;resize: none; outline: none; padding: 8px;"></textarea>
+                                                <button type="submit" class="btn btn-primary">ثبت پاسخ</button>
+                                            </form>
+                                            <button type="button" class="btn btn-default pull-left"
+                                                    data-dismiss="modal">خروج
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            {% if comment.comment_replay.all %}
+                                {% for comment in comment.comment_replay.all %}
+                                    <tr>
+                                        <td style="padding-right: 30px;">
+                                            {% if comment.author.get_full_name %}
+                                                {{ comment.author.get_full_name }}
+                                            {% else %}
+                                                {{ comment.author.username }}
+                                            {% endif %}
+                                            {% if not comment.is_view_by_admin %}
+                                                <span class="badge btn-danger"
+                                                      style="font-size: 0.5em;">دیده نشده</span>
+                                            {% endif %}
+                                        </td>
+                                        <td>{{ comment.article.title|truncatechars_html:"20" }}</td>
+                                        <td>
+                                            {% if comment.is_publish %}
+                                                <span onclick="convertCommentToDraft({{ comment.id }})"
+                                                      class="btn btn-success">فعال</span>
+                                            {% else %}
+                                                <span onclick="convertCommentToPublish({{ comment.id }})"
+                                                      class="btn btn-danger">غیر فعال</span>
+                                            {% endif %}
+                                        </td>
+                                        <td>
+                                            <div style="background-color: #cecece; padding: 5px; border-radius: 2px;"
+                                                 type="button" class="btn btn-default" data-toggle="modal"
+                                                 data-target="#{{ comment.id }}">
+                                                مشاهده جزئیات
+                                            </div>
+                                        </td>
+                                        <td>
+                                            <a onclick="deleteComment({{ comment.id }})" class="badge btn-danger"
+                                               title="حذف کامنت">
+                                                حذف
+                                            </a>
+                                        </td>
+                                    </tr>
+                                    <div class="modal fade" id="{{ comment.id }}" style="display: none;">
+                                <div class="modal-dialog">
+                                    <div class="modal-content">
+                                        <div class="modal-header">
+                                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                                <span aria-hidden="true">×</span></button>
+                                            <h4 class="modal-title">{{ comment.article.title }}</h4>
+                                        </div>
+                                        <div class="modal-body">
+                                            <h4 style="margin-bottom: 40px;">{{ comment.author.get_full_name }}</h4>
+                                            <p>
+                                                {{ comment.text|linebreaks }}
+                                            </p>
+                                        </div>
+                                        <div class="modal-footer">
+                                            <button type="button" class="btn btn-default pull-left"
+                                                    data-dismiss="modal">خروج
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                                {% endfor %}
+                            {% endif %}
+                        {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+                <!-- /.box-body -->
+            </div>
+            {% if page_obj.has_other_pages %}
+                <div class="box-footer clearfix">
+                    <ul class="pagination pagination-sm no-margin pull-right">
+                        {% if page_obj.has_previous %}
+                            <li>
+                                <a href="?page={{ page_obj.previous_page_number }}&article_filter={{ article_filter }}&status_filter={{ status_filter }}">«</a>
+                            </li>
+                        {% endif %}
+                        {% for pageNumber in page_obj.paginator.page_range %}
+                            <li>
+                                <a href="?page={{ pageNumber }}&article_filter={{ article_filter }}&status_filter={{ status_filter }}">{{ pageNumber }}</a>
+                            </li>
+                        {% endfor %}
+                        {% if page_obj.has_next %}
+                            <li>
+                                <a href="?page={{ page_obj.next_page_number }}&article_filter={{ article_filter }}&status_filter={{ status_filter }}">»</a>
+                            </li>
+                        {% endif %}
+                    </ul>
+                </div>
+            {% endif %}
+        </div>
+    </div>
+</section>

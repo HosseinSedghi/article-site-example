@@ -47,6 +47,7 @@ class ArticleComments(models.Model):
     replay = models.ForeignKey('ArticleComments', on_delete=models.CASCADE, related_name='comment_replay', null=True, blank=True)
     article = models.ForeignKey(Article, on_delete=models.CASCADE)
     date = models.DateTimeField(auto_now_add=True)
+    is_view_by_admin = models.BooleanField(default=False)
 
     def __str__(self):
         return f"{self.author.username} / {self.article}"
@@ -64,9 +65,11 @@ class ArticleView(models.Model):
 
 class ArticleLikes(models.Model):
     article = models.ForeignKey(Article, on_delete=models.CASCADE)
-    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    user = models.ForeignKey(User, on_delete=models.CASCADE, null=True, blank=True)
+    ip = models.CharField(max_length=20)
 
 
 class ArticleDisLikes(models.Model):
     article = models.ForeignKey(Article, on_delete=models.CASCADE)
-    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    user = models.ForeignKey(User, on_delete=models.CASCADE, null=True, blank=True)
+    ip = models.CharField(max_length=20)

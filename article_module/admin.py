@@ -1,6 +1,6 @@
 from django.contrib import admin
 
-from article_module.models import Article, ArticleCategory, ArticleComments, ArticleView
+from article_module.models import Article, ArticleCategory, ArticleComments, ArticleView, ArticleLikes, ArticleDisLikes
 
 
 # Register your models here.
@@ -33,3 +33,5 @@ admin.site.register(Article, ArticleAdmin)
 admin.site.register(ArticleCategory, ArticleCategoryAdmin)
 admin.site.register(ArticleComments, ArticleCommentsAdmin)
 admin.site.register(ArticleView, ArticleViewAdmin)
+admin.site.register(ArticleLikes)
+admin.site.register(ArticleDisLikes)

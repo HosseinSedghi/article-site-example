@@ -1,0 +1,36 @@
+{% load poll_extras %}
+
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-md-12">
+            <div class="main-slider-box">
+                <div class="owl-carousel owl-theme main-slider">
+                    {% if sliders %}
+                        {% for slider in sliders %}
+                            <div class="item">
+                                <figure>
+                                    <a href="{% url 'article-detail-page' slug=slider.article.slug %}">
+                                        <img src="{{ slider.article.image.url }}" alt="">
+                                    </a>
+                                    <figcaption class="gradient-fig"></figcaption>
+                                    <figcaption class="desc-fig">
+                                        <span style="display: inline-block; margin-left: 10px;" class="d-inline-block m-l-2"><i class="fa fa-heart"></i> {{ slider.article.articlelikes_set.all.count }}</span>
+                                        <span style="display: inline-block; margin-left: 10px;" class="d-inline-block"><i class="fa fa-comment"></i> 56</span>
+                                        <span style="display: inline-block; margin-left: 10px;" class="d-inline-block"><i class="fa fa-eye"></i> {{ slider.article.articleview_set.all.count }}</span>
+                                        <a href="{% url 'article-detail-page' slug=slider.article.slug %}">
+                                            <h3>{{ slider.article.title }}</h3>
+                                        </a>
+                                        <span><i class="fa fa-clock-o"></i> {{ slider.article.create_date|jalali_date_humanize }}</span>
+                                        <p>
+                                            {{ slider.article.text|truncatechars_html:'200' }}
+                                        </p>
+                                    </figcaption>
+                                </figure>
+                            </div>
+                        {% endfor %}
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,51 @@
+{% load thumbnail %}
+
+<div class="post_content">
+    <div class="row">
+        <div class="col-md-12">
+            <b>دیگر مطالب نویسنده</b>
+        </div>
+    </div>
+    <div class="col-md-12">
+        <div class="row">
+            {% for article in articles_by_user %}
+                <div class="col-md-4">
+                    <div class="post-box">
+                        <a href="{% url 'article-detail-page' slug=article.slug %}">
+                            <figure>
+                                {% thumbnail article.image '167x129' crop='center' quality=90 as img %}
+                                    <img src="{{ img.url }}" alt="">
+                                {% endthumbnail %}
+                                {% if article.is_special %}
+                                    <figcaption class="view">
+                                        <span class="badge bg-danger">ویژه</span>
+                                    </figcaption>
+                                {% endif %}
+                            </figure>
+                        </a>
+                        <div class="text-p">
+                            <h4 class="text-center"><a href="">{{ article.title }}</a></h4>
+                            <p class="article-box_body-font-size text-justify">
+                                {{ article.text|truncatechars:'85' }}
+                            </p>
+                            <div>
+                                <div>
+                                    <i class="fa fa-user"></i>
+                                    <a href="{% url 'users-article-list-page' id=article.author.id %}">
+                                        {% if article.author.get_full_name %}
+                                            {{ article.author.get_full_name }}
+                                        {% else %}
+                                            {{ article.author.username }}
+                                        {% endif %}
+                                    </a>
+                                    <div class="clear-fix"></div>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+    </div>
+</div>

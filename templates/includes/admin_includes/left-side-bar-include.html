@@ -109,6 +109,14 @@
                     <span class="pull-left-container"></span>
                 </a>
             </li>
+            {% if request.user.is_superuser %}
+                <li class="{% if request.resolver_match.url_name == 'admin-ticket-list-page' %}active{% endif %}">
+                    <a href="{% url 'admin-ticket-list-page' %}">
+                        <i class="fa fa-ticket"></i> <span>تیکت ها</span>
+                        <span class="pull-left-container"></span>
+                    </a>
+                </li>
+            {% endif %}
         </ul>
     </section>
     <!-- /.sidebar -->

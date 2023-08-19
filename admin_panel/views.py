@@ -1,7 +1,7 @@
 from django.contrib.auth.decorators import login_required
 from django.core.paginator import Paginator
 from django.db.models import Q
-from django.http import HttpResponse, HttpResponseRedirect
+from django.http import HttpResponse, JsonResponse
 from django.shortcuts import render, redirect
 from django.urls import reverse_lazy
 from django.utils.decorators import method_decorator
@@ -11,6 +11,8 @@ from django.views.generic import TemplateView, CreateView, ListView, UpdateView,
 from account_module.models import User
 from admin_panel.forms import ArticleCreateEditForm, CategoryCreateEditForm, ChangePasswordForm
 from article_module.models import Article, ArticleCategory, ArticleComments
+from contact_module.models import Ticket
+from site_module.models import SiteSetting, Slider
 
 
 # Create your views here.
@@ -22,10 +24,13 @@ def special_required(func):
         article = Article.objects.get(slug=slug)
         if article.is_special:
             if request.user.is_authenticated:
-                if not request.user.is_special_user:
-                    return redirect(reverse_lazy('article-list-page'))
-                else:
+                if article.author.id == request.user.id:
                     return func(request, slug, *args, **kwargs)
+                else:
+                    if not request.user.is_special_user:
+                        return redirect(reverse_lazy('article-list-page'))
+                    else:
+                        return func(request, slug, *args, **kwargs)
             else:
                 return redirect(reverse_lazy('article-list-page'))
         else:
@@ -84,6 +89,8 @@ class AdminArticleListView(View):
         search_text = request.GET.get('search')
         author_filter = request.GET.get('author_filter')
         status_filter = request.GET.get('status_filter')
+        article_add_slider = request.GET.get('article_add_slider')
+        article_delete_slider = request.GET.get('article_delete_slider')
 
         if request.user.is_superuser:
             if search_text and author_filter and status_filter:
@@ -123,9 +130,32 @@ class AdminArticleListView(View):
             status_filter = ''
         if not author_filter:
             author_filter = ''
+
         paginator = Paginator(articles, 4)
         page_obj = paginator.get_page(request.GET.get('page'))
 
+        if article_add_slider:
+            article = Article.objects.filter(id=article_add_slider).first()
+            new_slider = Slider(article_id=article.id)
+            new_slider.save()
+            return render(request, 'admin_panel/article/article-box.html', {
+                'page_obj': page_obj,
+                'authors': authors,
+                'author_filter': author_filter,
+                'status_filter': status_filter,
+                'search_text': search_text,
+                'article_count': Article.objects.all().count()
+            })
+        if article_delete_slider:
+            Slider.objects.filter(article_id=article_delete_slider).first().delete()
+            return render(request, 'admin_panel/article/article-box.html', {
+                'page_obj': page_obj,
+                'authors': authors,
+                'author_filter': author_filter,
+                'status_filter': status_filter,
+                'search_text': search_text,
+                'article_count': Article.objects.all().count()
+            })
         return render(request, 'admin_panel/article/article-list.html', {
             'page_obj': page_obj,
             'authors': authors,
@@ -138,37 +168,41 @@ class AdminArticleListView(View):
 
 class AdminArticleCreateView(View):
     def get(self, request):
-        form = ArticleCreateEditForm()
+        categories = ArticleCategory.objects.all()
+        authors = User.objects.filter(Q(is_author=True) | Q(is_superuser=True))
         return render(request, 'admin_panel/article/article-create-edit.html', {
-            'form': form
+            'categories': categories,
+            'authors': authors,
         })
 
     def post(self, request):
-        form = ArticleCreateEditForm(request.POST)
-        if form.is_valid():
-            title = form.cleaned_data.get('title')
-            slug = form.cleaned_data.get('slug')
-            image = form.cleaned_data.get('image')
-            category = form.cleaned_data.get('category')
-            is_special = form.cleaned_data.get('is_special')
-            status = form.cleaned_data.get('status')
-            text = form.cleaned_data.get('text')
+        print('creating')
+        title = request.POST.get('title')
+        slug = request.POST.get('slug')
+        image = request.POST.get('image')
+        category = request.POST.get('category')
+        is_special = request.POST.get('is_special')
+        status = request.POST.get('status')
+        author = request.POST.get('author')
+        text = request.POST.get('text')
 
-            article_exists = Article.objects.filter(Q(title__exact=title) | Q(slug__exact=slug)).exists()
-            if not article_exists:
-                new_article = Article(title=title, slug=slug, image=image, category=category,
-                                      is_special=is_special, text=text, author_id=request.user.id)
-                if request.user.superuser:
-                    new_article.status = status
-                else:
-                    if status not in ['draft', 'lock']:
-                        new_article.status = 'draft'
-                new_article.save()
+        print(category)
+        print(type(category))
+        article_exists = Article.objects.filter(Q(title__exact=title) | Q(slug__exact=slug)).exists()
+        if not article_exists:
+            new_article = Article(title=title, slug=slug, image=image, text=text, author_id=author)
+            if is_special:
+                new_article.is_special = True
             else:
-                form.add_error('title', 'این نام یا اسلاگ قبلا استفاده شده است')
-        return render(request, 'admin_panel/article/article-create-edit.html', {
-            'form': form
-        })
+                new_article.is_special = False
+            if request.user.superuser:
+                new_article.status = status
+            else:
+                if status not in ['draft', 'lock']:
+                    new_article.status = 'draft'
+            new_article.save()
+
+        return render(request, 'admin_panel/article/article-create-edit.html', {})
 
 
 # ==================================== Category Classes ==================================== #
@@ -183,6 +217,7 @@ class AdminCategoryListView(ListView):
         return query.prefetch_related('parent').filter(parent=None)
 
 
+@method_decorator(view_just_admin, name='dispatch')
 class AdminCategoryCreateView(CreateView):
     model = ArticleCategory
     form_class = CategoryCreateEditForm
@@ -190,6 +225,7 @@ class AdminCategoryCreateView(CreateView):
     success_url = reverse_lazy('admin-category-list-page')
 
 
+@method_decorator(view_just_admin, name='dispatch')
 class AdminCategoryEditView(UpdateView):
     model = ArticleCategory
     form_class = CategoryCreateEditForm
@@ -269,10 +305,10 @@ class AdminChangePasswordView(View):
 class AdminCommentListView(View):
     def get(self, request):
         if request.user.is_superuser:
-            comments = ArticleComments.objects.select_related('author').select_related('article').all()
+            comments = ArticleComments.objects.select_related('author').select_related('article').filter(replay=None)
         else:
             comments = ArticleComments.objects.select_related('author').select_related('article').filter(
-                author_id=request.user.id)
+                article__author_id=request.user.id, replay=None)
         article_filter = request.GET.get('article_filter')
         status_filter = request.GET.get('status_filter')
 
@@ -280,38 +316,38 @@ class AdminCommentListView(View):
             if article_filter and status_filter:
                 if status_filter == 'publish':
                     comments = ArticleComments.objects.select_related('author').select_related('article').filter(
-                        article__title=article_filter, is_publish=True)
+                        article__title=article_filter, is_publish=True, replay=None)
                 elif status_filter == 'draft':
                     comments = ArticleComments.objects.select_related('author').select_related('article').filter(
-                        article__title=article_filter, is_publish=False)
+                        article__title=article_filter, is_publish=False, replay=None)
             elif article_filter and not status_filter:
                 comments = ArticleComments.objects.select_related('author').select_related('article').filter(
-                    article__title=article_filter)
+                    article__title=article_filter, replay=None)
             elif status_filter and not article_filter:
                 if status_filter == 'publish':
                     comments = ArticleComments.objects.select_related('author').select_related('article').filter(
-                        is_publish=True)
+                        is_publish=True, replay=None)
                 elif status_filter == 'draft':
                     comments = ArticleComments.objects.select_related('author').select_related('article').filter(
-                        is_publish=False)
+                        is_publish=False, replay=None)
         else:
             if article_filter and status_filter:
                 if status_filter == 'publish':
                     comments = ArticleComments.objects.select_related('author').select_related('article').filter(
-                        article__title=article_filter, is_publish=True, article__author_id=request.user.id)
+                        article__title=article_filter, is_publish=True, article__author_id=request.user.id, replay=None)
                 elif status_filter == 'draft':
                     comments = ArticleComments.objects.select_related('author').select_related('article').filter(
-                        article__title=article_filter, is_publish=False, article__author_id=request.user.id)
+                        article__title=article_filter, is_publish=False, article__author_id=request.user.id, replay=None)
             elif article_filter and not status_filter:
                 comments = ArticleComments.objects.select_related('author').select_related('article').filter(
-                    article__title=article_filter, article__author_id=request.user.id)
+                    article__title=article_filter, article__author_id=request.user.id, replay=None)
             elif status_filter and not article_filter:
                 if status_filter == 'publish':
                     comments = ArticleComments.objects.select_related('author').select_related('article').filter(
-                        is_publish=True, article__author_id=request.user.id)
+                        is_publish=True, article__author_id=request.user.id, replay=None)
                 elif status_filter == 'draft':
                     comments = ArticleComments.objects.select_related('author').select_related('article').filter(
-                        is_publish=False, article__author_id=request.user.id)
+                        is_publish=False, article__author_id=request.user.id, replay=None)
 
         if not status_filter:
             status_filter = ''
@@ -320,13 +356,104 @@ class AdminCommentListView(View):
         paginator = Paginator(comments, 6)
         page_obj = paginator.get_page(request.GET.get('page'))
 
+        no_comment_view = ArticleComments.objects.filter(is_view_by_admin=False, article__author_id=request.user.id)
+        for i in no_comment_view:
+            i.is_view_by_admin = True
+            i.save()
+
         return render(request, 'admin_panel/comments.html', {
             'page_obj': page_obj,
             'article_filter': article_filter,
             'status_filter': status_filter,
             'comment_count': ArticleComments.objects.all().count(),
-            'articles': Article.objects.all()
+            'articles': Article.objects.all(),
         })
+
+    def post(self, request):
+        comment_text = request.POST.get('comment_replay')
+        comment_id = request.POST.get('comment_id')
+        article_id = request.POST.get('article_id')
+
+        new_comment = ArticleComments(article_id=article_id, text=comment_text,
+                                      author_id=request.user.id, replay_id=comment_id, is_publish=True)
+        new_comment.save()
+
+        return redirect('admin-comment-page')
+def delete_comment(request):
+    comment_id = request.GET.get('comment_id')
+    ArticleComments.objects.filter(id=comment_id).first().delete()
+    return JsonResponse({
+        'status': 'success'
+    })
+
+
+def convert_comment_publish(request):
+    comment_id = request.GET.get('comment_id')
+    comment = ArticleComments.objects.get(id=comment_id)
+    comment.is_publish = True
+    comment.save()
+    if request.user.is_superuser:
+        comments = ArticleComments.objects.select_related('author').select_related('article').filter(
+            replay=None
+        )
+    else:
+        comments = ArticleComments.objects.select_related('author').select_related('article').filter(
+            article__author_id=request.user.id, replay=None)
+    article_filter = request.GET.get('article_filter')
+    status_filter = request.GET.get('status_filter')
+    paginator = Paginator(comments, 6)
+    page_obj = paginator.get_page(request.GET.get('page'))
+    return render(request, 'admin_panel/comments-box.html', {
+        'page_obj': page_obj,
+        'article_filter': article_filter,
+        'status_filter': status_filter,
+        'comment_count': ArticleComments.objects.all().count(),
+        'articles': Article.objects.all()
+    })
+
+
+def convert_comment_draft(request):
+    comment_id = request.GET.get('comment_id')
+    comment = ArticleComments.objects.get(id=comment_id)
+    comment.is_publish = False
+    comment.save()
+    if request.user.is_superuser:
+        comments = ArticleComments.objects.select_related('author').select_related('article').filter(
+            replay=None
+        )
+    else:
+        comments = ArticleComments.objects.select_related('author').select_related('article').filter(
+            article__author_id=request.user.id, replay=None)
+    article_filter = request.GET.get('article_filter')
+    status_filter = request.GET.get('status_filter')
+    paginator = Paginator(comments, 6)
+    page_obj = paginator.get_page(request.GET.get('page'))
+    return render(request, 'admin_panel/comments-box.html', {
+        'page_obj': page_obj,
+        'article_filter': article_filter,
+        'status_filter': status_filter,
+        'comment_count': ArticleComments.objects.all().count(),
+        'articles': Article.objects.all()
+    })
+
+
+# ======================================== Ticket classes ======================================== #
+
+@method_decorator(view_just_admin, name='dispatch')
+class TicketListView(ListView):
+    model = Ticket
+    template_name = 'admin_panel/tickets.html'
+    context_object_name = 'tickets'
+    paginate_by = 4
+
+
+@view_just_admin
+def delete_ticket(request):
+    ticket_id = request.GET.get('ticket_id')
+    Ticket.objects.filter(id=ticket_id).first().delete()
+    return JsonResponse({
+        'status': 'success'
+    })
 
 
 # ======================================== Partial classes ======================================== #
@@ -334,9 +461,28 @@ class AdminCommentListView(View):
 class HeaderPartial(TemplateView):
     template_name = 'includes/admin_includes/header-include.html'
 
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data()
+        if self.request.user.is_superuser:
+            context['no_view_comment_count'] = ArticleComments.objects.filter(is_view_by_admin=False).count
+            context['no_view_comments'] = ArticleComments.objects.filter(is_view_by_admin=False)[:4]
+            context['no_view_ticket_count'] = Ticket.objects.filter(is_view_by_admin=False).count()
+            context['no_view_tickets'] = Ticket.objects.filter(is_view_by_admin=False)[:4]
+        elif self.request.user.is_author:
+            context['no_view_comment_count'] = ArticleComments.objects.filter(article__author_id=self.request.user.id,
+                                                                              is_view_by_admin=False).count
+            context['no_view_comments'] = ArticleComments.objects.filter(article__author_id=self.request.user.id,
+                                                                         is_view_by_admin=False)[:4]
+        return context
+
 
 class FooterPartial(TemplateView):
     template_name = 'includes/admin_includes/footer-include.html'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data()
+        context['copy_right_text'] = SiteSetting.objects.first().copy_right
+        return context
 
 
 class LeftSideBarPartial(TemplateView):

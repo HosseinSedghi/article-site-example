@@ -1,6 +1,7 @@
 from django.contrib import admin
 
-from site_module.models import SiteSetting, Links, LinkBoxes
+from site_module.models import SiteSetting, Links, LinkBoxes, Slider
+
 
 # Register your models here.
 
@@ -11,3 +12,4 @@ class LinksAdmin(admin.ModelAdmin):
 admin.site.register(SiteSetting)
 admin.site.register(Links, LinksAdmin)
 admin.site.register(LinkBoxes)
+admin.site.register(Slider)
